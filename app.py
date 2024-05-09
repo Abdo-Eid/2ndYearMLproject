@@ -1,10 +1,9 @@
-import tkinter as tk
-
-
+import tkinter as tk   
 # ------------------------------- Styles ----------------------------------
 
 class AppStyle:
     def __init__(self):
+
         self.label_MB = {
             "fg": "#FFFFFF",
             "bg": "#2C3E50",
@@ -14,34 +13,55 @@ class AppStyle:
             "height": 3
         }
 
+# ------------------------------- pages ----------------------------------
 
-# ------------------------------- ROOT WINDOW ----------------------------------
-
-
-class TkinterApp(tk.Tk):
-
-    def __init__(self):
-        super().__init__()
-        self.style = AppStyle()
-
-        self.title("LM App")
-        self.w,self.h = 720,480
-        self.geometry(f'{self.w}x{self.h}')
-
-
-        self.main_win_buttons()
-    
-    def main_win_buttons(self):
+class Main(tk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.style = parent.style
 
         frame = tk.Frame(self)
-        button1 = tk.Button(frame, text="Load Data", **self.style.label_MB).pack(side=tk.TOP, pady=5)
-        button2 = tk.Button(frame, text="Pre Processing", **self.style.label_MB).pack(side=tk.TOP, pady=5)
-        button3 = tk.Button(frame, text="Classification", **self.style.label_MB).pack(side=tk.TOP, pady=5)
-        button4 = tk.Button(frame, text="Regression", **self.style.label_MB).pack(side=tk.TOP, pady=5)
+        tk.Button(frame, text="Load Data", **self.style.label_MB, command=lambda: parent.show_page("LoadData")).pack(side=tk.TOP, pady=5)
+        tk.Button(frame, text="Pre Processing", **self.style.label_MB, command=lambda: parent.show_page("PreProcessing")).pack(side=tk.TOP, pady=5)
+        tk.Button(frame, text="Classification", **self.style.label_MB, command=lambda: parent.show_page("Classification")).pack(side=tk.TOP, pady=5)
+        tk.Button(frame, text="Regression", **self.style.label_MB, command=lambda: parent.show_page("Regression")).pack(side=tk.TOP, pady=5)
 
         # Center the frame within the window
         frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
-if __name__ == "__main__":
-    root = TkinterApp()
-    root.mainloop()
+# -----------------------------------------------------------------
+        
+class LoadData(tk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        tk.Button(self, text="Main", command=lambda: parent.show_page("Main")).place(x = 5, y = 5)
+
+                
+# -----------------------------------------------------------------
+        
+class PreProcessing(tk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        tk.Button(self, text="Main", command=lambda: parent.show_page("Main")).place(x = 5, y = 5)
+
+                
+# -----------------------------------------------------------------
+        
+class Classification(tk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        tk.Button(self, text="Main", command=lambda: parent.show_page("Main")).place(x = 5, y = 5)
+                
+                
+# -----------------------------------------------------------------
+        
+
+class Regression(tk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        tk.Button(self, text="Main", command=lambda: parent.show_page("Main")).place(x = 5, y = 5)
+
