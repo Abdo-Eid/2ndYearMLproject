@@ -1,67 +1,57 @@
-import tkinter as tk   
-# ------------------------------- Styles ----------------------------------
+from pages import *
 
-class AppStyle:
+import tkinter as tk
+
+# ------------------------------- ROOT WINDOW ----------------------------------
+
+
+class TkinterApp(tk.Tk):
+
     def __init__(self):
+        super().__init__()
+        self.style = AppStyle()
 
-        self.label_MB = {
-            "fg": "#FFFFFF",
-            "bg": "#2C3E50",
-            "cursor": "arrow",
-            "font": ("Arial", 14),
-            "width": 18,
-            "height": 3
-        }
+        self.title("LM App")
+        self.w,self.h = 720,480
+        self.geometry(f'{self.w}x{self.h}')
+        # make instanse of the model to be shared
+        self.data = DataModel()
 
-# ------------------------------- pages ----------------------------------
+        self.store_frames((Main, LoadData, PreProcessing, Classification, Regression))
+        self.show_page("Main")
 
-class Main(tk.Frame):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.style = parent.style
 
-        frame = tk.Frame(self)
-        tk.Button(frame, text="Load Data", **self.style.label_MB, command=lambda: parent.show_page("LoadData")).pack(side=tk.TOP, pady=5)
-        tk.Button(frame, text="Pre Processing", **self.style.label_MB, command=lambda: parent.show_page("PreProcessing")).pack(side=tk.TOP, pady=5)
-        tk.Button(frame, text="Classification", **self.style.label_MB, command=lambda: parent.show_page("Classification")).pack(side=tk.TOP, pady=5)
-        tk.Button(frame, text="Regression", **self.style.label_MB, command=lambda: parent.show_page("Regression")).pack(side=tk.TOP, pady=5)
 
-        # Center the frame within the window
-        frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+    def store_frames(self, frames:tuple):
+        """
+        takes tuple of frame objects to store them 
+        so we can access them using name
+        """
 
-# -----------------------------------------------------------------
-        
-class LoadData(tk.Frame):
-    def __init__(self, parent):
-        super().__init__(parent)
+        # define grid in the root 
+        self.columnconfigure(0,  weight=1)
+        self.rowconfigure(0, weight=1)
 
-        tk.Button(self, text="Main", command=lambda: parent.show_page("Main")).place(x = 5, y = 5)
+        # Dictionary to hold all pages
+        self.pages = {}
 
-                
-# -----------------------------------------------------------------
-        
-class PreProcessing(tk.Frame):
-    def __init__(self, parent):
-        super().__init__(parent)
+        # Create and add pages to the dictionary
+        for Page in frames:
+            page_name = Page.__name__
+            # initialize the frame obj into the root window
+            page = Page(self)
+            # store obj by name
+            self.pages[page_name] = page
+            # stack all pages in the same cell on top of each other
+            page.grid(row=0, column=0, sticky="nsew")
 
-        tk.Button(self, text="Main", command=lambda: parent.show_page("Main")).place(x = 5, y = 5)
 
-                
-# -----------------------------------------------------------------
-        
-class Classification(tk.Frame):
-    def __init__(self, parent):
-        super().__init__(parent)
+    def show_page(self, page_name):
+        """Show a page by name."""
+        page = self.pages[page_name]
+        # raise to frame to the top to be visible
+        page.tkraise()
 
-        tk.Button(self, text="Main", command=lambda: parent.show_page("Main")).place(x = 5, y = 5)
-                
-                
-# -----------------------------------------------------------------
-        
-
-class Regression(tk.Frame):
-    def __init__(self, parent):
-        super().__init__(parent)
-
-        tk.Button(self, text="Main", command=lambda: parent.show_page("Main")).place(x = 5, y = 5)
-
+if __name__ == "__main__":
+    root = TkinterApp()
+    root.mainloop()
