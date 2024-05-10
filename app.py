@@ -14,13 +14,13 @@ class TkinterApp(tk.Tk):
         self.title("LM App")
         self.w,self.h = 720,480
         self.geometry(f'{self.w}x{self.h}')
+        self.minsize(self.w,self.h)
         # make instanse of the model to be shared
         self.data = DataModel()
 
         self.store_frames((Main, LoadData, PreProcessing, Classification, Regression))
         self.show_page("Main")
-
-
+    
 
     def store_frames(self, frames:tuple):
         """

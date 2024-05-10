@@ -16,4 +16,4 @@ class AppStyle:
 class DataModel:
     def __init__(self):
         self.file_path = None
-        self.data_frame = pd.DataFrame()
+        self.df = pd.DataFrame()
