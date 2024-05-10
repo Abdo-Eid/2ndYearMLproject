@@ -7,12 +7,12 @@ import tkinter as tk
 
 class TkinterApp(tk.Tk):
 
-    def __init__(self):
+    def __init__(self, size : tuple[int, int]):
         super().__init__()
         self.style = AppStyle()
 
         self.title("LM App")
-        self.w,self.h = 720,480
+        self.w,self.h = size
         self.geometry(f'{self.w}x{self.h}')
         self.minsize(self.w,self.h)
         # make instanse of the model to be shared
@@ -53,5 +53,5 @@ class TkinterApp(tk.Tk):
         page.tkraise()
 
 if __name__ == "__main__":
-    root = TkinterApp()
+    root = TkinterApp((1080,520))
     root.mainloop()

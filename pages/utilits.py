@@ -1,14 +1,11 @@
-
 from sklearn.preprocessing import OneHotEncoder,LabelEncoder,MinMaxScaler
 from sklearn.impute import SimpleImputer
 from imblearn.over_sampling import SMOTE
 import pandas as pd
-
 import tkinter as tk
 # ------------------- Pre Processing -------------------
 
-def simpel_imputer():
-    global data
+def simpel_imputer(df : pd.DataFrame):
     frame2 = tk.Toplevel()
     frame2.title("Simple Imputer Option")
     frame2.geometry("400x300")

@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 import pandas as pd
 import tksheet
-from .shared import DataModel
+from .shared import DataModel, display_df
         
 class LoadData(tk.Frame):
     def __init__(self, parent):
@@ -55,7 +55,7 @@ class LoadData(tk.Frame):
         if self.data.file_path:
             try:
                 self.make_sheet(self.data.df)
-                
+
             except Exception as e:
                 self.result_label.config(text="Error: " + str(e))
         else:
@@ -74,20 +74,17 @@ class LoadData(tk.Frame):
     def num_nan(self):
         if self.data.file_path:
             try:
-                self.make_sheet(pd.DataFrame(self.data.df.isna().sum()).T)
+                self.make_sheet(self.data.df.isna().sum())
             except Exception as e:
                 self.result_label.config(text="Error loading DataFrame: " + str(e))
         else:
             self.result_label.config(text="Please load a data file first.")
 
     def make_sheet(self,df:pd.DataFrame):
+
         if hasattr(self,'sheet'):
-            self.sheet.set_sheet_data(df.values.tolist())
-            self.sheet.set_header_data(df.columns.tolist())
-            self.sheet.redraw()
-        else:
-            self.sheet = tksheet.Sheet(self.show_frame)
-            self.sheet.set_sheet_data(df.values.tolist())
-            self.sheet.set_header_data(df.columns.tolist())
-            self.sheet.pack(expand=True,fill='both')
+            self.sheet.destroy()
+
+        self.sheet = display_df(self,df)
+        self.sheet.pack(expand=True,fill='both')
         
