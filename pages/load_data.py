@@ -52,7 +52,7 @@ class LoadData(tk.Frame):
 
 
     def show_dataframe(self):
-        if self.data.file_path:
+        if self.data.file_path or not self.data.df.empty:
             try:
                 self.make_sheet(self.data.df)
 
