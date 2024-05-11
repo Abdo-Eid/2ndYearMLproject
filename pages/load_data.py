@@ -8,14 +8,13 @@ class LoadData(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
 
-        tk.Button(self, text="Main", command=lambda: parent.show_page("Main")).pack(padx=5,pady=5)
         self.data : DataModel = parent.data
         self.create_widgets()
         
 
     def create_widgets(self):
         self.main_frame = tk.Frame(self)
-        self.main_frame.pack(padx=5,pady=5)
+        self.main_frame.pack(padx=15,pady=5)
 
         # First Row
         tk.Button(self.main_frame, text="Load Data", command=self.load_data).grid(row=1, column=0, padx=5, pady=5)
@@ -25,10 +24,11 @@ class LoadData(tk.Frame):
 
         # Second Row
         tk.Button(self.main_frame, text="Show DataFrame", command=self.show_dataframe).grid(row=2, column=0, padx=5, pady=5)
+        tk.Button(self.main_frame, text="clear DataFrame", command=self.clear_dataframe).grid(row=2, column=1, padx=5, pady=5)
 
-        tk.Button(self.main_frame, text="Number of Duplicates", command=self.num_duplicates).grid(row=2, column=1, padx=5, pady=5)
+        tk.Button(self.main_frame, text="Number of Duplicates", command=self.num_duplicates).grid(row=2, column=2, padx=5, pady=5)
 
-        tk.Button(self.main_frame, text="Number of NaN", command=self.num_nan).grid(row=2, column=2, padx=5, pady=5)
+        tk.Button(self.main_frame, text="Number of NaN", command=self.num_nan).grid(row=2, column=3, padx=5, pady=5)
 
         # Third Row
         self.show_frame = tk.Frame(self)
@@ -60,6 +60,10 @@ class LoadData(tk.Frame):
                 self.result_label.config(text="Error: " + str(e))
         else:
             self.result_label.config(text="Please load a data file first.")
+
+    def clear_dataframe(self):
+        if hasattr(self,'sheet'):
+            self.sheet.destroy()
 
     def num_duplicates(self):
         if self.data.file_path:

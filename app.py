@@ -18,10 +18,12 @@ class TkinterApp(tk.Tk):
         # make instanse of the model to be shared
         self.data = DataModel()
 
-        self.store_frames((Main, LoadData, PreProcessing, Classification, Regression))
+        self.store_frames((Main, PreProcessing, Classification, Regression))
         self.show_page("Main")
+        self.LoadData_page = LoadData(self)
+        self.columnconfigure(1,  weight=3)
+        self.LoadData_page.grid(row=0, column=1, sticky="nsew")
     
-
     def store_frames(self, frames:tuple):
         """
         takes tuple of frame objects to store them 

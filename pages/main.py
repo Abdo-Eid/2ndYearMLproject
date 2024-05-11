@@ -7,7 +7,6 @@ class Main(tk.Frame):
         self.style = parent.style
 
         frame = tk.Frame(self)
-        tk.Button(frame, text="Load Data", **self.style.label_MB, command=lambda: parent.show_page("LoadData")).pack(side=tk.TOP, pady=5)
         tk.Button(frame, text="Pre Processing", **self.style.label_MB, command=lambda: parent.show_page("PreProcessing")).pack(side=tk.TOP, pady=5)
         tk.Button(frame, text="Classification", **self.style.label_MB, command=lambda: parent.show_page("Classification")).pack(side=tk.TOP, pady=5)
         tk.Button(frame, text="Regression", **self.style.label_MB, command=lambda: parent.show_page("Regression")).pack(side=tk.TOP, pady=5)
