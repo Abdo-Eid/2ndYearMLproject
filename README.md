@@ -1,9 +1,9 @@
 ## to do
-- [x] read the load data file
-- [x] make it a grid with 3 frames  
-- [x] make the nan and duplicate count for each column which will result in dataframe
-- [x] use tksheet to show the dataframes
 - [ ] make utilits and windows for each 
+- [ ] move load data to main window
+    - fix when click on load data again data disapper
+- [ ] add apply preprocess on selected data (using tree selectied feature)
+- [ ] use customtkinter
 
 ## installation
 1. install librarys in requiement.txt
