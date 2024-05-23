@@ -1,7 +1,6 @@
 import tkinter as tk   
 from tkinter import filedialog
 import pandas as pd
-import tksheet
 from .shared import DataModel, display_df
         
 class LoadData(tk.Frame):
@@ -10,8 +9,6 @@ class LoadData(tk.Frame):
 
         self.data : DataModel = parent.data
         self.create_widgets()
-        
-
     def create_widgets(self):
         self.main_frame = tk.Frame(self)
         self.main_frame.pack(padx=15,pady=5)
@@ -35,7 +32,6 @@ class LoadData(tk.Frame):
         self.show_frame.pack(expand=True, fill='both')
         self.result_label = tk.Label(self.show_frame, text="")
         self.result_label.pack()
-
     def load_data(self):
         """
         get csv file from user and insert the path into the entry
@@ -48,9 +44,6 @@ class LoadData(tk.Frame):
                 self.path_entry.insert(0, self.data.file_path)
             except Exception as e:
                 self.result_label.config(text="Error loading DataFrame: " + str(e))
-
-
-
     def show_dataframe(self):
         if self.data.file_path or not self.data.df.empty:
             try:
@@ -60,11 +53,9 @@ class LoadData(tk.Frame):
                 self.result_label.config(text="Error: " + str(e))
         else:
             self.result_label.config(text="Please load a data file first.")
-
     def clear_dataframe(self):
         if hasattr(self,'sheet'):
             self.sheet.destroy()
-
     def num_duplicates(self):
         if self.data.file_path:
             try:
@@ -74,7 +65,6 @@ class LoadData(tk.Frame):
                 self.result_label.config(text="Error loading DataFrame: " + str(e))
         else:
             self.result_label.config(text="Please load a data file first.")
-
     def num_nan(self):
         if self.data.file_path:
             try:
@@ -83,7 +73,6 @@ class LoadData(tk.Frame):
                 self.result_label.config(text="Error loading DataFrame: " + str(e))
         else:
             self.result_label.config(text="Please load a data file first.")
-
     def make_sheet(self,df:pd.DataFrame):
 
         if hasattr(self,'sheet'):
