@@ -24,6 +24,15 @@ class DataModel:
 
 
 def display_df(root, df):
+    """Make Dataframe as sheet using ttk TreeView
+    
+    Keyword arguments:
+    df: pd.DataFrame
+    df: 
+    argument -- description
+    Return: return_description
+    """
+
     frame = tk.Frame(root)
 
     tree = ttk.Treeview(frame, show='headings')

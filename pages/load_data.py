@@ -1,7 +1,7 @@
 import tkinter as tk   
 from tkinter import filedialog
 import pandas as pd
-import tksheet
+
 from .shared import DataModel, display_df
         
 class LoadData(tk.Frame):
@@ -85,6 +85,11 @@ class LoadData(tk.Frame):
             self.result_label.config(text="Please load a data file first.")
 
     def make_sheet(self,df:pd.DataFrame):
+        """Wrapper around display_df function.
+        
+        if the sheet exist it will be removed then packed again (updating)
+        """
+        
 
         if hasattr(self,'sheet'):
             self.sheet.destroy()
