@@ -67,7 +67,7 @@ def apply_smote():
                      axis=1)
 
 
-# ------------------- Clasification ----------------
+# ------------------- Clasification ------------------------
 def SVM_C(data_model: DataModel, kernel, size):
     X = data_model.df.iloc[:, :-1]
     y = data_model.df.iloc[:, -1]
@@ -94,7 +94,48 @@ def KNN(data_model: DataModel,n, metric, size):
     # Calculate accuracy
     display_evaluation_metrics(y_test, y_pred, "c")
 
+# ------------------- Regression ------------------------
 
+def call_linear_regression():
+    global data
+    # Convert feature names to strings
+    X_train, X_test, y_train, y_test = train_test_split(data.iloc[:, :-1], data.iloc[:, -1],
+                                                        test_size=0.2, random_state=42)
+    X_train.columns = X_train.columns.astype(str)
+    linear_reg = LinearRegression()
+    # Train the model
+    linear_reg.fit(X_train, y_train)
+    # Predict on the test set
+    y_pred = linear_reg.predict(X_test)
+    # Evaluate the model
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+    confusion_mat = confusion_matrix(y_test, y_pred)
+    # Display evaluation metrics
+    display_evaluation_metrics(accuracy, precision, recall, f1, confusion_mat)
+def call_logistic_regression():
+    global data
+    # Convert feature names to strings
+    X_train, X_test, y_train, y_test = train_test_split(data.iloc[:, :-1], data.iloc[:, -1],
+                                                        test_size=0.2, random_state=42)
+    X_train.columns = X_train.columns.astype(str)
+    logistic_reg = LogisticRegression()
+    # Train the model
+    logistic_reg.fit(X_train, y_train)
+    # Predict on the test set
+    y_pred = logistic_reg.predict(X_test)
+    # Evaluate the model
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+    confusion_mat = confusion_matrix(y_test, y_pred)
+    # Display evaluation metrics
+    display_evaluation_metrics(accuracy, precision, recall, f1, confusion_mat)
+    
+# ------------------- more ------------------------
 def display_evaluation_metrics(y_test, y_pred, type):
     # Create a Tkinter window
     window = tk.Tk()
@@ -123,7 +164,7 @@ def display_evaluation_metrics(y_test, y_pred, type):
 
     if type == "c":
 
-        clas_matric=classification_report(y_test, y_pred)
+        clas_matric=classification_report(y_test, y_pred, zero_division=0)
         tk.Label(frame, text="classification report:\n{}".format(clas_matric)).pack()
     # Run the Tkinter event loop
     window.mainloop()

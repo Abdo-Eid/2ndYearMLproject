@@ -1,5 +1,5 @@
-import tkinter as tk   
-from tkinter import filedialog
+import tkinter as tk
+from tkinter import ttk, filedialog
 import pandas as pd
 from .shared import DataModel, display_df
         
@@ -73,16 +73,43 @@ class LoadData(tk.Frame):
                 self.result_label.config(text="Error loading DataFrame: " + str(e))
         else:
             self.result_label.config(text="Please load a data file first.")
-    def make_sheet(self,df:pd.DataFrame):
-        """Wrapper around display_df function.
+    def make_sheet(self,df:pd.DataFrame | pd.Series):
+        """Make Dataframe as sheet using ttk TreeView.
         
         if the sheet exist it will be removed then packed again (updating)
         """
         
-
+        # check if the root (self) has attribute 'sheet'
+        # if so delete it
         if hasattr(self,'sheet'):
             self.sheet.destroy()
 
-        self.sheet = display_df(self,df)
+        # making the tree view in a frame
+        self.sheet = tk.Frame(self)
+
+        tree = ttk.Treeview(self.sheet, show='headings')
+
+        # check if the dataframe is a series if so transpose it
+        if isinstance(df, pd.Series):
+            df = pd.DataFrame(df, columns=['Value']).T
+
+
+        # Insert columns
+        tree["columns"] = list(df.columns)
+        for col in df.columns:
+            tree.column(col,width=5)
+            tree.heading(col, text=col)
+
+        # Insert data
+        for index, row in df.iterrows():
+            tree.insert("", tk.END, values=list(row))
+
+        tree.pack(expand=True,fill='both', side='left')
+
+        # make a scrollbar
+        scrollbar = ttk.Scrollbar(self.sheet, orient=tk.VERTICAL, command=tree.yview)
+        tree.configure(yscroll=scrollbar.set)
+        scrollbar.pack(side='right',fill="y")
+
         self.sheet.pack(expand=True,fill='both')
         

@@ -19,16 +19,16 @@ class PreProcessing(tk.Frame):
         self.header = ttk.Notebook(self)
         self.header.pack(expand=True, fill='both')
         # header
-        self.create_frame1()
-        self.create_frame2()
-        self.create_frame3()
+        self.create_imputer_frame()
+        self.create_Encoder_frame()
+        self.create_scaler_frame()
         # tk.Button(self.main_frame, text="Encoding", command=encoding_option).pack(padx=5,pady=5, side='left')
         # tk.Button(self.main_frame, text="Smote", command=apply_smote).pack(padx=5,pady=5, side='left')
 
         
 
-    def create_frame1(self):
-        # frame 1
+    def create_imputer_frame(self):
+
         frame = ttk.Frame(self.header)
         frame.pack(fill='both', expand=True)
 
@@ -48,8 +48,8 @@ class PreProcessing(tk.Frame):
         self.header.add(frame,text = 'simple imputer')
 
         
-    def create_frame2(self):
-        # frame 1
+    def create_Encoder_frame(self):
+
         frame = ttk.Frame(self.header)
         frame.pack(fill='both', expand=True)
 
@@ -59,7 +59,7 @@ class PreProcessing(tk.Frame):
         # adding to header
         self.header.add(frame,text = 'Encoding')
 
-    def create_frame3(self):
+    def create_scaler_frame(self):
         
         button2 = tk.Button(self, text="MinMax scaler", command=lambda : min_max(self.data))
         button2.pack()
