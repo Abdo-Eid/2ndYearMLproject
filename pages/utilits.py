@@ -159,3 +159,20 @@ def ANN(data_model: DataModel, selected_option,entry_test_size,entry_layers):
 
     # Display the evaluation metrics
     display_evaluation_metrics(y_test, y_pred, "c")
+def smote(data_model: DataModel, entry_test_size,frame):
+
+    X = data_model.df.iloc[:, :-1]
+    y = data_model.df.iloc[:, -1]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=entry_test_size / 100)
+
+    tk.Label(frame, text="Before OverSampling # 1 =\n{}".format(sum(y_train == 1))).pack()
+    print("Before OverSampling # 0 =", sum(y_train == 0))
+    tk.Label(frame, text="Before OverSampling # 0  =\n{}".format(sum(y_train == 0))).pack()
+
+    sm = SMOTE()
+    X_resampled, y_resampled = sm.fit_resample(X_train, y_train)
+
+    print("-----------------------------------------")
+    tk.Label(frame, text="After OverSampling # 1 =\n{}".format(sum(y_resampled == 1))).pack()
+    tk.Label(frame, text="After OverSampling # 0 =\n{}".format(sum(y_resampled == 0))).pack()
+
