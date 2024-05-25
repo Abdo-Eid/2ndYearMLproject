@@ -18,7 +18,7 @@ class TkinterApp(tk.Tk):
         # make instanse of the model to be shared
         self.data = DataModel()
 
-        self.store_frames((Main, PreProcessing, Classification, Regression))
+        self.store_frames((Main, PreProcessing, Classification, Regression, Clustring))
         self.show_page("Main")
         self.LoadData_page = LoadData(self)
         self.columnconfigure(1,  weight=3)
