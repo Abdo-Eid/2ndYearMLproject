@@ -10,10 +10,10 @@ import tkinter as tk
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 from .shared import DataModel
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, classification_report  # Removed the backslash
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, \
+    classification_report  # Removed the backslash
 from sklearn.neighbors import KNeighborsClassifier
-
-
+from sklearn.neural_network import MLPClassifier
 
 
 # ------------------- Pre Processing -------------------
@@ -83,8 +83,7 @@ def SVM_C(data_model: DataModel, kernel, size):
     display_evaluation_metrics(y_test, y_pred, "c")
 
 
-
-def KNN(data_model: DataModel,n, metric, size):
+def KNN(data_model: DataModel, n, metric, size):
     X = data_model.df.iloc[:, :-1]
     y = data_model.df.iloc[:, -1]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
@@ -125,12 +124,13 @@ def display_evaluation_metrics(y_test, y_pred, type):
     tk.Label(frame, text="Confusion Matrix:\n{}".format(confusion_mat)).pack()
 
     if type == "c":
-
-        clas_matric=classification_report(y_test, y_pred)
+        clas_matric = classification_report(y_test, y_pred)
         tk.Label(frame, text="classification report:\n{}".format(clas_matric)).pack()
     # Run the Tkinter event loop
     window.mainloop()
-def clustring(data_model: DataModel,frame, entry):
+
+
+def clustring(data_model: DataModel, frame, entry):
     # Create a frame to contain labels
     data = data_model.df.values  # Convert DataFrame to NumPy array
     km = KMeans(n_clusters=entry)
@@ -145,3 +145,17 @@ def clustring(data_model: DataModel,frame, entry):
     plt.title(f'KMeans Clustering with {entry} Clusters')
     plt.show()
 
+
+def ANN(data_model: DataModel, selected_option,entry_test_size,entry_layers):
+    X = data_model.df.iloc[:, :-1]
+    y = data_model.df.iloc[:, -1]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size= entry_test_size / 100)
+    NN = MLPClassifier(hidden_layer_sizes=entry_layers, activation='relu', learning_rate=selected_option)
+    NN.fit(X_train, y_train)
+    y_pred = NN.predict(X_test)
+
+    # Print the weights of the trained model
+    #print(NN.coefs_)
+
+    # Display the evaluation metrics
+    display_evaluation_metrics(y_test, y_pred, "c")
