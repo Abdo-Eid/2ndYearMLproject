@@ -74,6 +74,11 @@ class LoadData(tk.Frame):
         else:
             self.result_label.config(text="Please load a data file first.")
     def make_sheet(self,df:pd.DataFrame):
+        """Wrapper around display_df function.
+        
+        if the sheet exist it will be removed then packed again (updating)
+        """
+        
 
         if hasattr(self,'sheet'):
             self.sheet.destroy()

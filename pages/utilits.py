@@ -13,7 +13,6 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 
 
-
 # ------------------- Pre Processing -------------------
 
 def simple_imputer(data_model: DataModel, strategy):

@@ -18,11 +18,6 @@ class Classification(tk.Frame):
         self.create_frame_SVC()
         self.create_frame_knn()
         self.create_frame_DTC()
-        # self.create_frame2()
-        # self.create_frame3()
-        # tk.Button(self, text="decision tree classifier",command=DTC).pack()
-        # tk.Button(self, text="K Neighbors Classifier",command=KNN).pack()
-        # tk.Button(self, text="neural network",command=neural_networkpack()).pack()
 
     def create_frame_SVC(self):
         # frame 1
@@ -74,7 +69,6 @@ class Classification(tk.Frame):
 
         tk.Button(frame, text="implement",
                   command=lambda: KNN(self.data, int(n.get()), selected_option.get(), int(entry.get()))).pack()
-
         # adding to header
         self.header.add(frame, text='K.N.N')
 
