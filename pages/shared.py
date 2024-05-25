@@ -1,6 +1,5 @@
 import pandas as pd
-import tkinter as tk
-from tkinter import ttk
+
 # ------------------------------- Styles ----------------------------------
 
 class AppStyle:
@@ -19,3 +18,13 @@ class DataModel:
     def __init__(self):
         self.file_path = None
         self.df = pd.DataFrame()
+        self.selected_col = []
+    
+    # @property
+    # def selected_col(self):
+    #     return self._selected_col
+
+    # @selected_col.setter
+    # def selected_col(self, value):
+    #     self._selected_col = value
+    #     print(value)

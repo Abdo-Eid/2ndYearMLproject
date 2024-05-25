@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from .utilits import SVM_C,KNN
+from .utilits import SVM_C,KNN, logistic_regression
 
 
 class Classification(tk.Frame):
@@ -17,11 +17,7 @@ class Classification(tk.Frame):
         # header
         self.create_frame_SVC()
         self.create_frame_knn()
-
-        # self.create_frame2()
-        # self.create_frame3()
-        # tk.Button(self, text="decision tree classifier",command=DTC).pack()
-        # tk.Button(self, text="K Neighbors Classifier",command=KNN).pack()
+        self.create_frame_logistic()
         # tk.Button(self, text="neural network",command=neural_networkpack()).pack()
 
     def create_frame_SVC(self):
@@ -51,18 +47,17 @@ class Classification(tk.Frame):
         self.header.add(frame, text='SVM')
 
     def create_frame_knn(self):
-        # frame 1
         frame = ttk.Frame(self.header)
         frame.pack(fill='both', expand=True)
-        # strategy option menu
+
         ttk.Label(frame, text="Enter Number of Neighbors:").pack()
         n = ttk.Entry(frame, width=30)
         n.pack()
+
+        # matrix option menu
         ttk.Label(frame, text="chose matrix:").pack()
         options = ["hamming","chebyshev"]
-        # make variable inside the frame called selected_option
         selected_option = tk.StringVar(frame)
-        # set it to the second item
         selected_option.set(options[1])
         combobox = ttk.Combobox(frame, textvariable=selected_option, values=options)
         combobox.pack(padx=20, pady=20)
@@ -77,3 +72,19 @@ class Classification(tk.Frame):
 
         # adding to header
         self.header.add(frame, text='K.N.N')
+        
+    def create_frame_logistic(self):
+        frame = ttk.Frame(self.header)
+        frame.pack(fill='both', expand=True)
+
+        # ratio entry
+        ttk.Label(frame, text="Enter split test size:").pack()
+        entry = ttk.Entry(frame, width=30)
+        entry.pack()
+
+        tk.Button(frame, text="implement",
+                  command=lambda: logistic_regression(self.data, int(entry.get()))).pack()
+
+
+        # adding to header
+        self.header.add(frame,text = 'Logistic')

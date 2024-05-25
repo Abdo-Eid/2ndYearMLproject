@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from .utilits import simple_imputer, min_max, label_encode, one_hot_encode
+from .utilits import simple_imputer, min_max, label_encode, one_hot_encode, delete_selected
 from .shared import DataModel
 
 class PreProcessing(tk.Frame):
@@ -22,7 +22,7 @@ class PreProcessing(tk.Frame):
         self.create_imputer_frame()
         self.create_Encoder_frame()
         self.create_scaler_frame()
-        # tk.Button(self.main_frame, text="Encoding", command=encoding_option).pack(padx=5,pady=5, side='left')
+        self.create_more_frame()
         # tk.Button(self.main_frame, text="Smote", command=apply_smote).pack(padx=5,pady=5, side='left')
 
         
@@ -66,3 +66,12 @@ class PreProcessing(tk.Frame):
         
         # adding to header
         self.header.add(button2,text = 'MinMax scaler')
+
+    def create_more_frame(self):
+        frame = ttk.Frame(self.header)
+        frame.pack(fill='both', expand=True)
+
+        tk.Button(frame, text= "delete selected", command= lambda : delete_selected(self.data)).pack()
+        tk.Button(frame, text= "delete dublcate", command= lambda : self.data.df.drop_duplicates(inplace=True)).pack()
+        
+        self.header.add(frame,text = 'more')
