@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from .utilits import simple_imputer, min_max, label_encode, one_hot_encode
 from .shared import DataModel
+from .utilits import smote
 
 class PreProcessing(tk.Frame):
     def __init__(self, parent):
@@ -22,6 +23,7 @@ class PreProcessing(tk.Frame):
         self.create_frame1()
         self.create_frame2()
         self.create_frame3()
+        self.create_frame4()
         # tk.Button(self.main_frame, text="Encoding", command=encoding_option).pack(padx=5,pady=5, side='left')
         # tk.Button(self.main_frame, text="Smote", command=apply_smote).pack(padx=5,pady=5, side='left')
 
@@ -66,3 +68,17 @@ class PreProcessing(tk.Frame):
         
         # adding to header
         self.header.add(button2,text = 'MinMax scaler')
+    def create_frame4(self):
+
+        frame = ttk.Frame(self.header)
+        frame.pack(fill='both', expand=True)
+
+        ttk.Label(frame, text="Enter split test size:").pack()
+        entry_test_size = ttk.Entry(frame, width=30)
+        entry_test_size.pack()
+
+        button3 = tk.Button(frame, text="Implement SMOTE", command=lambda: smote(self.data, int(entry_test_size.get()),frame))
+        button3.pack()
+
+        self.header.add(frame, text='SMOTE')
+

@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
+
 from .shared import DataModel
+from .utilits import clustring
+
 
 class Clustring(tk.Frame):
     def __init__(self, parent):
@@ -11,4 +14,20 @@ class Clustring(tk.Frame):
         self.data : DataModel = parent.data
         self.create_widgets()
     def create_widgets(self):
-        pass
+        self.header = ttk.Notebook(self)
+        self.header.pack(expand=True, fill='both')
+        self.create_frame_km()
+    def create_frame_km(self):
+        # frame 1
+        frame = ttk.Frame(self.header)
+        frame.pack(fill='both', expand=True)
+        # strategy option menu
+        ttk.Label(frame, text="Enter Number of cluster:").pack()
+        entry = ttk.Entry(frame, width=30)
+        entry.pack()
+        tk.Button(frame, text="implement",command=lambda: clustring(self.data,frame,int((entry.get())))).pack()
+
+        # adding to header
+        self.header.add(frame, text='clustring')
+
+
