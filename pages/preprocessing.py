@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from .utilits import simple_imputer, min_max, label_encode, one_hot_encode, delete_selected
 from .shared import DataModel
+from .utilits import smote
 
 class PreProcessing(tk.Frame):
     def __init__(self, parent):
