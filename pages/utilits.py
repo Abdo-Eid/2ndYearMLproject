@@ -5,11 +5,15 @@ from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
 import pandas as pd
+import numpy as np
 import tkinter as tk
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
 from .shared import DataModel
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, \
-    classification_report
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, classification_report  # Removed the backslash
 from sklearn.neighbors import KNeighborsClassifier
+
+
 
 
 # ------------------- Pre Processing -------------------
@@ -25,7 +29,6 @@ def simple_imputer(data_model: DataModel, strategy):
 def label_encode(data_model: DataModel):
     X = data_model.df.iloc[:, :-1]
     y = data_model.df.iloc[:, -1]
-
     y = LabelEncoder().fit_transform(y)
     y = y.astype(int)
     data_model.df = pd.concat([X, pd.DataFrame(y, columns=['label'])], axis=1)
@@ -127,4 +130,18 @@ def display_evaluation_metrics(y_test, y_pred, type):
         tk.Label(frame, text="classification report:\n{}".format(clas_matric)).pack()
     # Run the Tkinter event loop
     window.mainloop()
+def clustring(data_model: DataModel,frame, entry):
+    # Create a frame to contain labels
+    data = data_model.df.values  # Convert DataFrame to NumPy array
+    km = KMeans(n_clusters=entry)
+    km.fit(data)
+    labels = km.labels_
+    centers = km.cluster_centers_
+
+    print("Cluster centers:", centers)
+    tk.Label(frame, text="Cluster centers:\n{}".format(centers)).pack()
+    plt.scatter(data[:, 0], data[:, 1], c=labels, s=50, cmap='viridis')
+    plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5)
+    plt.title(f'KMeans Clustering with {entry} Clusters')
+    plt.show()
 
