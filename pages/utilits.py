@@ -10,13 +10,27 @@ from sklearn.impute import SimpleImputer
 from sklearn.svm import SVC, SVR
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
+<<<<<<< HEAD
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, \
     mean_absolute_error, mean_squared_error, r2_score
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
+=======
+import pandas as pd
+import numpy as np
+import tkinter as tk
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+from .shared import DataModel
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, \
+    classification_report  # Removed the backslash
+>>>>>>> f3026a3279d10c631bf9862884fc378361d02af5
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.tree import DecisionTreeClassifier
+
 
 from .shared import DataModel
 
@@ -116,6 +130,7 @@ def DTC(data_model: DataModel,depth, metric, size):
     # Calculate accuracy
     display_evaluation_metrics(y_test, y_pred, "c")
 
+<<<<<<< HEAD
 def logistic_regression(data_model: DataModel, size):
 
     X = data_model.df.iloc[:, :-1]
@@ -163,6 +178,22 @@ def SVM_r(data_model: DataModel, kernel, size):
     
 # ------------------- more ------------------------
 def display_evaluation_metrics(y_test, y_pred, type: Literal['r', 'c']):
+=======
+def DTC(data_model: DataModel,depth, metric, size):
+    X = data_model.df.iloc[:, :-1]
+    y = data_model.df.iloc[:, -1]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
+    # Initialize SVM classifier
+    DTC_classifier = DecisionTreeClassifier(max_depth=depth, criterion=metric)
+    # Train the classifier
+    DTC_classifier.fit(X_train, y_train)
+    # Predict on the test set
+    y_pred = DTC_classifier.predict(X_test)
+    # Calculate accuracy
+    display_evaluation_metrics(y_test, y_pred, "c")
+
+def display_evaluation_metrics(y_test, y_pred, type):
+>>>>>>> f3026a3279d10c631bf9862884fc378361d02af5
     # Create a Tkinter window
     window = tk.Tk()
     window.geometry('600x400')  # Set window size
@@ -187,6 +218,7 @@ def display_evaluation_metrics(y_test, y_pred, type: Literal['r', 'c']):
         tk.Label(frame, text = t).pack()
 
     if type == "c":
+<<<<<<< HEAD
 
         accuracy = accuracy_score(y_test, y_pred)
         tk.Label(frame, text="Accuracy: {:.2f}%".format(accuracy)).pack()
@@ -195,6 +227,9 @@ def display_evaluation_metrics(y_test, y_pred, type: Literal['r', 'c']):
         tk.Label(frame, text ="Confusion Matrix:\n{}".format(confusion_mat)).pack()
 
         clas_matric=classification_report(y_test, y_pred, zero_division=0)
+=======
+        clas_matric = classification_report(y_test, y_pred)
+>>>>>>> f3026a3279d10c631bf9862884fc378361d02af5
         tk.Label(frame, text="classification report:\n{}".format(clas_matric)).pack()
     # Run the Tkinter event loop
     window.mainloop()

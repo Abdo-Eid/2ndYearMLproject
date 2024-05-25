@@ -20,10 +20,18 @@ class PreProcessing(tk.Frame):
         self.header = ttk.Notebook(self)
         self.header.pack(expand=True, fill='both')
         # header
+<<<<<<< HEAD
         self.create_imputer_frame()
         self.create_Encoder_frame()
         self.create_scaler_frame()
         self.create_more_frame()
+=======
+        self.create_frame1()
+        self.create_frame2()
+        self.create_frame3()
+        self.create_frame4()
+        # tk.Button(self.main_frame, text="Encoding", command=encoding_option).pack(padx=5,pady=5, side='left')
+>>>>>>> f3026a3279d10c631bf9862884fc378361d02af5
         # tk.Button(self.main_frame, text="Smote", command=apply_smote).pack(padx=5,pady=5, side='left')
 
         
@@ -67,6 +75,7 @@ class PreProcessing(tk.Frame):
         
         # adding to header
         self.header.add(button2,text = 'MinMax scaler')
+<<<<<<< HEAD
 
     def create_more_frame(self):
         frame = ttk.Frame(self.header)
@@ -76,3 +85,19 @@ class PreProcessing(tk.Frame):
         tk.Button(frame, text= "delete dublcate", command= lambda : self.data.df.drop_duplicates(inplace=True)).pack()
         
         self.header.add(frame,text = 'more')
+=======
+    def create_frame4(self):
+
+        frame = ttk.Frame(self.header)
+        frame.pack(fill='both', expand=True)
+
+        ttk.Label(frame, text="Enter split test size:").pack()
+        entry_test_size = ttk.Entry(frame, width=30)
+        entry_test_size.pack()
+
+        button3 = tk.Button(frame, text="Implement SMOTE", command=lambda: smote(self.data, int(entry_test_size.get()),frame))
+        button3.pack()
+
+        self.header.add(frame, text='SMOTE')
+
+>>>>>>> f3026a3279d10c631bf9862884fc378361d02af5
