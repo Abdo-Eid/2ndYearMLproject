@@ -14,6 +14,8 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
     classification_report  # Removed the backslash
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
+from sklearn.tree import DecisionTreeClassifier
+
 
 
 # ------------------- Pre Processing -------------------
@@ -96,6 +98,19 @@ def KNN(data_model: DataModel, n, metric, size):
     # Calculate accuracy
     display_evaluation_metrics(y_test, y_pred, "c")
 
+
+def DTC(data_model: DataModel,depth, metric, size):
+    X = data_model.df.iloc[:, :-1]
+    y = data_model.df.iloc[:, -1]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
+    # Initialize SVM classifier
+    DTC_classifier = DecisionTreeClassifier(max_depth=depth, criterion=metric)
+    # Train the classifier
+    DTC_classifier.fit(X_train, y_train)
+    # Predict on the test set
+    y_pred = DTC_classifier.predict(X_test)
+    # Calculate accuracy
+    display_evaluation_metrics(y_test, y_pred, "c")
 
 def display_evaluation_metrics(y_test, y_pred, type):
     # Create a Tkinter window
