@@ -1,6 +1,6 @@
 import tkinter as tk   
 from tkinter import ttk
-
+from .utilits import linear_regression, SVM_r
 
 class Regression(ttk.Frame):
     def __init__(self, parent):
@@ -18,35 +18,47 @@ class Regression(ttk.Frame):
         self.header.pack(expand=True, fill='both')
         # header
         self.create_Linear_frame()
-        self.create_Logistic_frame()
+        self.create_SVR_frame()
 
     def create_Linear_frame(self):
 
         frame = ttk.Frame(self.header)
         frame.pack(fill='both', expand=True)
 
-        # welcome_label = Label(frame2, text="Regression Page", fg='#2C3E50', bg="#F2F3F4",
-        #                     font=("Arial", 14))  # Text color changed to dark blue
-        # welcome_label.pack()
-        # q = Button(frame2, text="Linear Regression", fg="#2C3E50", bg="#FFFFFF", width=20, height=3,
-        #         command=call_linear_regression)  # Text color changed to dark blue, background color changed to white
-        # q.pack()
-        # q = Button(frame2, text="Logistic Regression", fg="#2C3E50", bg="#FFFFFF", width=20, height=3,
-        #         command=call_logistic_regression)  # Text color changed to dark blue, background color changed to white
-        # q.pack()
+        # ratio entry
+        ttk.Label(frame, text="Enter split test size:").pack()
+        entry = ttk.Entry(frame, width=30)
+        entry.pack()
+
+        tk.Button(frame, text="implement",
+                  command=lambda: linear_regression(self.data, int(entry.get()))).pack()
 
         # adding to header
-        self.header.add(frame,text = 'simple imputer')
+        self.header.add(frame,text = 'Linear')
 
         
-    def create_Logistic_frame(self):
+    def create_SVR_frame(self):
         frame = ttk.Frame(self.header)
         frame.pack(fill='both', expand=True)
 
+        # kernal option menu
+        ttk.Label(frame, text="chose kernal:").pack()
+        options = ['linear', 'rbf', 'poly', 'sigmoid', 'precomputed']
+        selected_option = tk.StringVar(frame)
+        selected_option.set(options[1])
+        combobox = ttk.Combobox(frame, textvariable=selected_option, values=options)
+        combobox.pack(padx=20, pady=20)
 
+        # ratio entry
+        ttk.Label(frame, text="Enter split test size:").pack()
+        entry = ttk.Entry(frame, width=30)
+        entry.pack()
+
+        tk.Button(frame, text="implement",
+                  command=lambda: SVM_r(self.data, selected_option.get(), int(entry.get()))).pack()
 
         # adding to header
-        self.header.add(frame,text = 'simple imputer')
+        self.header.add(frame,text = 'SVR')
 
 
 

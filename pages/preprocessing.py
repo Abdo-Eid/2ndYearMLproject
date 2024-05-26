@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from .utilits import simple_imputer, min_max, label_encode, one_hot_encode, smote
+from .utilits import simple_imputer, min_max, label_encode, one_hot_encode, delete_selected
 from .shared import DataModel
 
 class PreProcessing(tk.Frame):
@@ -22,12 +22,13 @@ class PreProcessing(tk.Frame):
         self.create_imputer_frame()
         self.create_Encoder_frame()
         self.create_scaler_frame()
-        self.create_smote_frame()
+        self.create_more_frame()
+        # tk.Button(self.main_frame, text="Smote", command=apply_smote).pack(padx=5,pady=5, side='left')
 
         
 
     def create_imputer_frame(self):
-        # frame 1
+
         frame = ttk.Frame(self.header)
         frame.pack(fill='both', expand=True)
 
@@ -48,7 +49,7 @@ class PreProcessing(tk.Frame):
 
         
     def create_Encoder_frame(self):
-        # frame 1
+
         frame = ttk.Frame(self.header)
         frame.pack(fill='both', expand=True)
 
@@ -65,19 +66,6 @@ class PreProcessing(tk.Frame):
         
         # adding to header
         self.header.add(button2,text = 'MinMax scaler')
-    def create_smote_frame(self):
-
-            frame = ttk.Frame(self.header)
-            frame.pack(fill='both', expand=True)
-
-            ttk.Label(frame, text="Enter split test size:").pack()
-            entry_test_size = ttk.Entry(frame, width=30)
-            entry_test_size.pack()
-
-            button3 = tk.Button(frame, text="Implement SMOTE", command=lambda: smote(self.data, int(entry_test_size.get()),frame))
-            button3.pack()
-
-            self.header.add(frame, text='SMOTE')
 
     def create_more_frame(self):
         frame = ttk.Frame(self.header)
