@@ -12,10 +12,14 @@ from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, \
     mean_absolute_error, mean_squared_error, r2_score
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
 
 from .shared import DataModel
+
 
 
 # ------------------- Pre Processing -------------------
@@ -31,7 +35,6 @@ def simple_imputer(data_model: DataModel, strategy):
 def label_encode(data_model: DataModel):
     X = data_model.df.iloc[:, :-1]
     y = data_model.df.iloc[:, -1]
-
     y = LabelEncoder().fit_transform(y)
     y = y.astype(int)
     data_model.df = pd.concat([X, pd.DataFrame(y, columns=['label'])], axis=1)
@@ -88,8 +91,7 @@ def SVM_C(data_model: DataModel, kernel, size):
     display_evaluation_metrics(y_test, y_pred, "c")
 
 
-
-def KNN(data_model: DataModel,n, metric, size):
+def KNN(data_model: DataModel, n, metric, size):
     X = data_model.df.iloc[:, :-1]
     y = data_model.df.iloc[:, -1]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
@@ -193,7 +195,55 @@ def display_evaluation_metrics(y_test, y_pred, type: Literal['r', 'c']):
         tk.Label(frame, text ="Confusion Matrix:\n{}".format(confusion_mat)).pack()
 
         clas_matric=classification_report(y_test, y_pred, zero_division=0)
+        clas_matric = classification_report(y_test, y_pred)
         tk.Label(frame, text="classification report:\n{}".format(clas_matric)).pack()
     # Run the Tkinter event loop
     window.mainloop()
+
+
+def clustring(data_model: DataModel, frame, entry):
+    # Create a frame to contain labels
+    data = data_model.df.values  # Convert DataFrame to NumPy array
+    km = KMeans(n_clusters=entry)
+    km.fit(data)
+    labels = km.labels_
+    centers = km.cluster_centers_
+
+    print("Cluster centers:", centers)
+    tk.Label(frame, text="Cluster centers:\n{}".format(centers)).pack()
+    plt.scatter(data[:, 0], data[:, 1], c=labels, s=50, cmap='viridis')
+    plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5)
+    plt.title(f'KMeans Clustering with {entry} Clusters')
+    plt.show()
+
+
+def ANN(data_model: DataModel, selected_option,entry_test_size,entry_layers):
+    X = data_model.df.iloc[:, :-1]
+    y = data_model.df.iloc[:, -1]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size= entry_test_size / 100)
+    NN = MLPClassifier(hidden_layer_sizes=entry_layers, activation='relu', learning_rate=selected_option)
+    NN.fit(X_train, y_train)
+    y_pred = NN.predict(X_test)
+
+    # Print the weights of the trained model
+    #print(NN.coefs_)
+
+    # Display the evaluation metrics
+    display_evaluation_metrics(y_test, y_pred, "c")
+def smote(data_model: DataModel, entry_test_size,frame):
+
+    X = data_model.df.iloc[:, :-1]
+    y = data_model.df.iloc[:, -1]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=entry_test_size / 100)
+
+    tk.Label(frame, text="Before OverSampling # 1 =\n{}".format(sum(y_train == 1))).pack()
+    print("Before OverSampling # 0 =", sum(y_train == 0))
+    tk.Label(frame, text="Before OverSampling # 0  =\n{}".format(sum(y_train == 0))).pack()
+
+    sm = SMOTE()
+    X_resampled, y_resampled = sm.fit_resample(X_train, y_train)
+
+    print("-----------------------------------------")
+    tk.Label(frame, text="After OverSampling # 1 =\n{}".format(sum(y_resampled == 1))).pack()
+    tk.Label(frame, text="After OverSampling # 0 =\n{}".format(sum(y_resampled == 0))).pack()
 

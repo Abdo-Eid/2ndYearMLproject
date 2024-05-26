@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from .utilits import SVM_C,KNN, DTC, logistic_regression
 
+from .utilits import SVM_C,KNN, DTC, logistic_regression, ANN
 
 class Classification(tk.Frame):
     def __init__(self, parent):
@@ -19,6 +19,8 @@ class Classification(tk.Frame):
         self.create_frame_knn()
         self.create_frame_logistic()
         self.create_frame_DTC()
+        self.create_frame_ANN()
+
 
     def create_frame_SVC(self):
         # frame 1
@@ -72,6 +74,7 @@ class Classification(tk.Frame):
         # adding to header
         self.header.add(frame, text='K.N.N')
 
+
         
     def create_frame_logistic(self):
         frame = ttk.Frame(self.header)
@@ -86,6 +89,33 @@ class Classification(tk.Frame):
 
         # adding to header
         self.header.add(frame,text = 'Logistic')
+
+
+    def create_frame_ANN(self):
+
+        frame = ttk.Frame(self.header)
+        frame.pack(fill='both', expand=True)
+
+        ttk.Label(frame, text="Enter Number of layers:").pack()
+        entry_layers = ttk.Entry(frame, width=30)
+        entry_layers.pack()
+
+        ttk.Label(frame, text="chose learning_rate:").pack()
+        options = ["constant", "invscaling", "adaptive"]
+        selected_option = tk.StringVar(frame)
+        selected_option.set(options[0])
+        combobox = ttk.Combobox(frame, textvariable=selected_option, values=options)
+        combobox.pack(padx=20, pady=20)
+
+        ttk.Label(frame, text="Enter split test size:").pack()
+        entry_test_size = ttk.Entry(frame, width=30)
+        entry_test_size.pack()
+
+        tk.Button(frame, text="implement",
+                  command=lambda: ANN(self.data, selected_option.get(), int(entry_test_size.get()),int(entry_layers.get()))).pack()
+
+        self.header.add(frame, text='ANN')
+
 
     def create_frame_DTC(self):
             # frame 1
