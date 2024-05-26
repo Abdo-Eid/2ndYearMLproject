@@ -13,6 +13,7 @@ from imblearn.over_sampling import SMOTE
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, \
     mean_absolute_error, mean_squared_error, r2_score
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 from .shared import DataModel
 
@@ -115,6 +116,18 @@ def logistic_regression(data_model: DataModel, size):
 
     display_evaluation_metrics(y_test, y_pred, "r")
     
+def DTC(data_model: DataModel,depth, metric, size):
+    X = data_model.df.iloc[:, :-1]
+    y = data_model.df.iloc[:, -1]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
+    # Initialize SVM classifier
+    DTC_classifier = DecisionTreeClassifier(max_depth=depth, criterion=metric)
+    # Train the classifier
+    DTC_classifier.fit(X_train, y_train)
+    # Predict on the test set
+    y_pred = DTC_classifier.predict(X_test)
+    # Calculate accuracy
+    display_evaluation_metrics(y_test, y_pred, "c")
 
 # ------------------- Regression ------------------------
 

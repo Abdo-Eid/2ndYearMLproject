@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from .utilits import SVM_C,KNN, logistic_regression
+from .utilits import SVM_C,KNN, DTC, logistic_regression
 
 
 class Classification(tk.Frame):
@@ -18,7 +18,7 @@ class Classification(tk.Frame):
         self.create_frame_SVC()
         self.create_frame_knn()
         self.create_frame_logistic()
-        # tk.Button(self, text="neural network",command=neural_networkpack()).pack()
+        self.create_frame_DTC()
 
     def create_frame_SVC(self):
         # frame 1
@@ -69,9 +69,9 @@ class Classification(tk.Frame):
 
         tk.Button(frame, text="implement",
                   command=lambda: KNN(self.data, int(n.get()), selected_option.get(), int(entry.get()))).pack()
-
         # adding to header
         self.header.add(frame, text='K.N.N')
+
         
     def create_frame_logistic(self):
         frame = ttk.Frame(self.header)
@@ -82,9 +82,36 @@ class Classification(tk.Frame):
         entry = ttk.Entry(frame, width=30)
         entry.pack()
 
-        tk.Button(frame, text="implement",
-                  command=lambda: logistic_regression(self.data, int(entry.get()))).pack()
-
+        tk.Button(frame, text="implement",command=lambda: logistic_regression(self.data, int(entry.get()))).pack()
 
         # adding to header
         self.header.add(frame,text = 'Logistic')
+
+    def create_frame_DTC(self):
+            # frame 1
+            frame = ttk.Frame(self.header)
+            frame.pack(fill='both', expand=True)
+            # strategy option menu
+            ttk.Label(frame, text="Enter Max Depth:").pack()
+            depth = ttk.Entry(frame, width=30)
+            depth.pack()
+            ttk.Label(frame, text="chose Criterion:").pack()
+            options = ["entropy","gini"]
+            # make variable inside the frame called selected_option
+            selected_option = tk.StringVar(frame)
+            # set it to the second item
+            selected_option.set(options[1])
+            combobox = ttk.Combobox(frame, textvariable=selected_option, values=options)
+            combobox.pack(padx=20, pady=20)
+
+            # ratio entry
+            ttk.Label(frame, text="Enter split test size:").pack()
+            entry = ttk.Entry(frame, width=30)
+            entry.pack()
+
+            tk.Button(frame, text="implement",
+                    command=lambda: DTC(self.data, int(depth.get()), selected_option.get(), int(entry.get()))).pack()
+
+            # adding to header
+            self.header.add(frame, text='D.T.C')
+
