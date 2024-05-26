@@ -98,7 +98,6 @@ def KNN(data_model: DataModel, n, metric, size):
     # Calculate accuracy
     display_evaluation_metrics(y_test, y_pred, "c")
 
-
 def DTC(data_model: DataModel,depth, metric, size):
     X = data_model.df.iloc[:, :-1]
     y = data_model.df.iloc[:, -1]
@@ -174,6 +173,7 @@ def ANN(data_model: DataModel, selected_option,entry_test_size,entry_layers):
 
     # Display the evaluation metrics
     display_evaluation_metrics(y_test, y_pred, "c")
+    
 def smote(data_model: DataModel, entry_test_size,frame):
 
     X = data_model.df.iloc[:, :-1]

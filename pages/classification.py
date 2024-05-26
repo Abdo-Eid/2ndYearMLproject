@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from .utilits import SVM_C,KNN,DTC
-from .utilits import ANN
-
+from .utilits import SVM_C,KNN,DTC, ANN
 
 
 class Classification(tk.Frame):
@@ -73,6 +71,7 @@ class Classification(tk.Frame):
 
         tk.Button(frame, text="implement",
                   command=lambda: KNN(self.data, int(n.get()), selected_option.get(), int(entry.get()))).pack()
+
         # adding to header
         self.header.add(frame, text='K.N.N')
 
