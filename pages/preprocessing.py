@@ -23,6 +23,7 @@ class PreProcessing(tk.Frame):
         self.create_imputer_frame()
         self.create_Encoder_frame()
         self.create_scaler_frame()
+        self.create_smote_frame()
         self.create_more_frame()
 
     def create_imputer_frame(self):
@@ -65,7 +66,7 @@ class PreProcessing(tk.Frame):
         # adding to header
         self.header.add(button2,text = 'MinMax scaler')
         
-    def create_frame4(self):
+    def create_smote_frame(self):
 
         frame = ttk.Frame(self.header)
         frame.pack(fill='both', expand=True)
