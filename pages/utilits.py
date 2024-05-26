@@ -1,7 +1,8 @@
+from typing import Literal
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder, MinMaxScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
-from sklearn.svm import SVC
+from sklearn.svm import SVC, SVR
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
 import pandas as pd
@@ -10,11 +11,13 @@ import tkinter as tk
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 from .shared import DataModel
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, \
-    classification_report  # Removed the backslash
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, \
+    mean_absolute_error, mean_squared_error, r2_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
+from .shared import DataModel
+from sklearn.linear_model import LogisticRegression, LinearRegression
 
 
 
@@ -71,8 +74,8 @@ def apply_smote():
     data = pd.concat([pd.DataFrame(X_resampled, columns=X.columns), pd.Series(y_resampled, name=y.name)],
                      axis=1)
 
+# ------------------- Clasification ------------------------
 
-# ------------------- Clasification ----------------
 def SVM_C(data_model: DataModel, kernel, size):
     X = data_model.df.iloc[:, :-1]
     y = data_model.df.iloc[:, -1]
@@ -111,7 +114,53 @@ def DTC(data_model: DataModel,depth, metric, size):
     # Calculate accuracy
     display_evaluation_metrics(y_test, y_pred, "c")
 
-def display_evaluation_metrics(y_test, y_pred, type):
+def logistic_regression(data_model: DataModel, size):
+
+    X = data_model.df.iloc[:, :-1]
+    y = data_model.df.iloc[:, -1]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
+
+    logistic_reg = LogisticRegression()
+    # Train the model
+    logistic_reg.fit(X_train, y_train)
+    # Predict on the test set
+    y_pred = logistic_reg.predict(X_test)
+
+    display_evaluation_metrics(y_test, y_pred, "r")
+    
+
+# ------------------- Regression ------------------------
+
+def linear_regression(data_model: DataModel, size):
+
+    X = data_model.df.iloc[:, :-1]
+    y = data_model.df.iloc[:, -1]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
+
+    linear_reg = LinearRegression()
+    # Train the model
+    linear_reg.fit(X_train, y_train)
+    # Predict on the test set
+    y_pred = linear_reg.predict(X_test)
+
+    display_evaluation_metrics(y_test, y_pred, "r")
+
+def SVM_r(data_model: DataModel, kernel, size):
+    
+    X = data_model.df.iloc[:, :-1]
+    y = data_model.df.iloc[:, -1]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
+
+    svr = SVR(kernel=kernel)
+
+    svr.fit(X_train, y_train)
+
+    y_pred = svr.predict(X_test)
+
+    display_evaluation_metrics(y_test, y_pred, "r")
+    
+# ------------------- more ------------------------
+def display_evaluation_metrics(y_test, y_pred, type: Literal['r', 'c']):
     # Create a Tkinter window
     window = tk.Tk()
     window.geometry('600x400')  # Set window size
@@ -138,7 +187,14 @@ def display_evaluation_metrics(y_test, y_pred, type):
     tk.Label(frame, text="Confusion Matrix:\n{}".format(confusion_mat)).pack()
 
     if type == "c":
-        clas_matric = classification_report(y_test, y_pred)
+
+        accuracy = accuracy_score(y_test, y_pred)
+        tk.Label(frame, text="Accuracy: {:.2f}%".format(accuracy)).pack()
+
+        confusion_mat = confusion_matrix(y_test, y_pred)
+        tk.Label(frame, text ="Confusion Matrix:\n{}".format(confusion_mat)).pack()
+
+        clas_matric=classification_report(y_test, y_pred, zero_division=0)
         tk.Label(frame, text="classification report:\n{}".format(clas_matric)).pack()
     # Run the Tkinter event loop
     window.mainloop()

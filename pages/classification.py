@@ -74,6 +74,21 @@ class Classification(tk.Frame):
 
         # adding to header
         self.header.add(frame, text='K.N.N')
+        
+    def create_frame_logistic(self):
+        frame = ttk.Frame(self.header)
+        frame.pack(fill='both', expand=True)
+
+        # ratio entry
+        ttk.Label(frame, text="Enter split test size:").pack()
+        entry = ttk.Entry(frame, width=30)
+        entry.pack()
+
+        tk.Button(frame, text="implement",
+                  command=lambda: logistic_regression(self.data, int(entry.get()))).pack()
+
+        # adding to header
+        self.header.add(frame,text = 'Logistic')
 
     def create_frame_ANN(self):
 

@@ -1,4 +1,5 @@
 from pages import *
+
 import tkinter as tk
 
 # ------------------------------- ROOT WINDOW ----------------------------------
@@ -54,5 +55,5 @@ class TkinterApp(tk.Tk):
         page.tkraise()
 
 if __name__ == "__main__":
-    root = TkinterApp((1180,520))
+    root = TkinterApp((1080,520))
     root.mainloop()
