@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from .utilits import simple_imputer, min_max, label_encode, one_hot_encode, delete_selected
+from .utilits import simple_imputer, min_max, label_encode, one_hot_encode
 from .shared import DataModel
 from .utilits import smote
 
@@ -20,24 +20,17 @@ class PreProcessing(tk.Frame):
         self.header = ttk.Notebook(self)
         self.header.pack(expand=True, fill='both')
         # header
-<<<<<<< HEAD
-        self.create_imputer_frame()
-        self.create_Encoder_frame()
-        self.create_scaler_frame()
-        self.create_more_frame()
-=======
         self.create_frame1()
         self.create_frame2()
         self.create_frame3()
         self.create_frame4()
         # tk.Button(self.main_frame, text="Encoding", command=encoding_option).pack(padx=5,pady=5, side='left')
->>>>>>> f3026a3279d10c631bf9862884fc378361d02af5
         # tk.Button(self.main_frame, text="Smote", command=apply_smote).pack(padx=5,pady=5, side='left')
 
         
 
-    def create_imputer_frame(self):
-
+    def create_frame1(self):
+        # frame 1
         frame = ttk.Frame(self.header)
         frame.pack(fill='both', expand=True)
 
@@ -57,8 +50,8 @@ class PreProcessing(tk.Frame):
         self.header.add(frame,text = 'simple imputer')
 
         
-    def create_Encoder_frame(self):
-
+    def create_frame2(self):
+        # frame 1
         frame = ttk.Frame(self.header)
         frame.pack(fill='both', expand=True)
 
@@ -68,24 +61,13 @@ class PreProcessing(tk.Frame):
         # adding to header
         self.header.add(frame,text = 'Encoding')
 
-    def create_scaler_frame(self):
+    def create_frame3(self):
         
         button2 = tk.Button(self, text="MinMax scaler", command=lambda : min_max(self.data))
         button2.pack()
         
         # adding to header
         self.header.add(button2,text = 'MinMax scaler')
-<<<<<<< HEAD
-
-    def create_more_frame(self):
-        frame = ttk.Frame(self.header)
-        frame.pack(fill='both', expand=True)
-
-        tk.Button(frame, text= "delete selected", command= lambda : delete_selected(self.data)).pack()
-        tk.Button(frame, text= "delete dublcate", command= lambda : self.data.df.drop_duplicates(inplace=True)).pack()
-        
-        self.header.add(frame,text = 'more')
-=======
     def create_frame4(self):
 
         frame = ttk.Frame(self.header)
@@ -100,4 +82,3 @@ class PreProcessing(tk.Frame):
 
         self.header.add(frame, text='SMOTE')
 
->>>>>>> f3026a3279d10c631bf9862884fc378361d02af5

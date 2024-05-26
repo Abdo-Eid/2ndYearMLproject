@@ -1,12 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
-<<<<<<< HEAD
-from .utilits import SVM_C,KNN, DTC, ANN, logistic_regression
-=======
 from .utilits import SVM_C,KNN,DTC
 from .utilits import ANN
 
->>>>>>> f3026a3279d10c631bf9862884fc378361d02af5
 
 
 class Classification(tk.Frame):
@@ -25,10 +21,6 @@ class Classification(tk.Frame):
         self.create_frame_knn()
         self.create_frame_ANN()
         self.create_frame_DTC()
-<<<<<<< HEAD
-        self.create_frame_logistic()
-=======
->>>>>>> f3026a3279d10c631bf9862884fc378361d02af5
 
 
     def create_frame_SVC(self):
@@ -58,17 +50,18 @@ class Classification(tk.Frame):
         self.header.add(frame, text='SVM')
 
     def create_frame_knn(self):
+        # frame 1
         frame = ttk.Frame(self.header)
         frame.pack(fill='both', expand=True)
-
+        # strategy option menu
         ttk.Label(frame, text="Enter Number of Neighbors:").pack()
         n = ttk.Entry(frame, width=30)
         n.pack()
-
-        # matrix option menu
         ttk.Label(frame, text="chose matrix:").pack()
         options = ["hamming","chebyshev"]
+        # make variable inside the frame called selected_option
         selected_option = tk.StringVar(frame)
+        # set it to the second item
         selected_option.set(options[1])
         combobox = ttk.Combobox(frame, textvariable=selected_option, values=options)
         combobox.pack(padx=20, pady=20)
@@ -131,80 +124,7 @@ class Classification(tk.Frame):
         entry.pack()
 
         tk.Button(frame, text="implement",
-<<<<<<< HEAD
                   command=lambda: DTC(self.data, int(depth.get()), selected_option.get(), int(entry.get()))).pack()
 
         # adding to header
         self.header.add(frame, text='D.T.C')
-
-        
-    def create_frame_logistic(self):
-        frame = ttk.Frame(self.header)
-        frame.pack(fill='both', expand=True)
-
-=======
-                  command=lambda: KNN(self.data, int(n.get()), selected_option.get(), int(entry.get()))).pack()
-        # adding to header
-        self.header.add(frame, text='K.N.N')
-
-    def create_frame_ANN(self):
-
-        frame = ttk.Frame(self.header)
-        frame.pack(fill='both', expand=True)
-
-        ttk.Label(frame, text="Enter Number of layers:").pack()
-        entry_layers = ttk.Entry(frame, width=30)
-        entry_layers.pack()
-
-        ttk.Label(frame, text="chose learning_rate:").pack()
-        options = ["constant", "invscaling", "adaptive"]
-        selected_option = tk.StringVar(frame)
-        selected_option.set(options[0])
-        combobox = ttk.Combobox(frame, textvariable=selected_option, values=options)
-        combobox.pack(padx=20, pady=20)
-
-        ttk.Label(frame, text="Enter split test size:").pack()
-        entry_test_size = ttk.Entry(frame, width=30)
-        entry_test_size.pack()
-
-        tk.Button(frame, text="implement",
-                  command=lambda: ANN(self.data, selected_option.get(), int(entry_test_size.get()),int(entry_layers.get()))).pack()
-
-        self.header.add(frame, text='ANN')
-
-    def create_frame_DTC(self):
-        # frame 1
-        frame = ttk.Frame(self.header)
-        frame.pack(fill='both', expand=True)
-        # strategy option menu
-        ttk.Label(frame, text="Enter Max Depth:").pack()
-        depth = ttk.Entry(frame, width=30)
-        depth.pack()
-        ttk.Label(frame, text="chose Criterion:").pack()
-        options = ["entropy","gini"]
-        # make variable inside the frame called selected_option
-        selected_option = tk.StringVar(frame)
-        # set it to the second item
-        selected_option.set(options[1])
-        combobox = ttk.Combobox(frame, textvariable=selected_option, values=options)
-        combobox.pack(padx=20, pady=20)
-
->>>>>>> f3026a3279d10c631bf9862884fc378361d02af5
-        # ratio entry
-        ttk.Label(frame, text="Enter split test size:").pack()
-        entry = ttk.Entry(frame, width=30)
-        entry.pack()
-
-        tk.Button(frame, text="implement",
-<<<<<<< HEAD
-                  command=lambda: logistic_regression(self.data, int(entry.get()))).pack()
-
-
-        # adding to header
-        self.header.add(frame,text = 'Logistic')
-=======
-                  command=lambda: DTC(self.data, int(depth.get()), selected_option.get(), int(entry.get()))).pack()
-
-        # adding to header
-        self.header.add(frame, text='D.T.C')
->>>>>>> f3026a3279d10c631bf9862884fc378361d02af5
