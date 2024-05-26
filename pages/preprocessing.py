@@ -71,12 +71,8 @@ class PreProcessing(tk.Frame):
         frame = ttk.Frame(self.header)
         frame.pack(fill='both', expand=True)
 
-        ttk.Label(frame, text="Enter split test size:").pack()
-        entry_test_size = ttk.Entry(frame, width=30)
-        entry_test_size.pack()
 
-        button3 = tk.Button(frame, text="Implement SMOTE", command=lambda: smote(self.data, int(entry_test_size.get()),frame))
-        button3.pack()
+        tk.Button(frame, text="Implement SMOTE", command=lambda: smote(self.data, frame)).pack()
 
         self.header.add(frame, text='SMOTE')
 

@@ -16,7 +16,6 @@ class AppStyle:
 # ------------------------------- Data ----------------------------------
 class DataModel:
     def __init__(self):
-        self.data = None
         self.file_path = None
         self.df = pd.DataFrame()
         self.selected_col = []

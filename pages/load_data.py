@@ -19,11 +19,10 @@ class LoadData(tk.Frame):
         self.path_entry = tk.Entry(self.main_frame)
         self.path_entry.grid(row=1, column=1, columnspan=3, padx=5, pady=5, sticky="ew")
         tk.Button(self.main_frame, text="save", command=self.save_dataframe).grid(row=1, column=4, padx=5, pady=5)
-
         # Second Row
         tk.Button(self.main_frame, text="Show DataFrame", command=self.show_dataframe).grid(row=2, column=0, padx=5, pady=5)
-        tk.Button(self.main_frame, text="clear DataFrame", command=self.clear_dataframe).grid(row=2, column=1, padx=5, pady=5)
-        tk.Button(self.main_frame, text="select", command=lambda : setattr(self.data, 'selected_col', self.selected_col)).grid(row=2, column=2, padx=5, pady=5)
+        tk.Button(self.main_frame, text="hide table", command=self.clear_dataframe).grid(row=2, column=1, padx=5, pady=5)
+        tk.Button(self.main_frame, text="clear select", command=self.clear_select).grid(row=2, column=2, padx=5, pady=5)
         tk.Button(self.main_frame, text="# of Duplicates", command=self.num_duplicates).grid(row=2, column=3, padx=5, pady=5)
         tk.Button(self.main_frame, text="# of NaN", command=self.num_nan).grid(row=2, column=4, padx=5, pady=5)
 
@@ -127,19 +126,19 @@ class LoadData(tk.Frame):
 
         tree.pack(expand=True,fill='both', side='left')
 
-        self.selected_col = []
+        # When selecting a column it stored 
         def on_column_select(event):
             selected_column = tree.identify_column(event.x)
             column_id = int(selected_column.replace("#", "")) - 1
             column_name = df.columns[column_id]
 
-            if column_name in self.selected_col:
-                self.selected_col.remove(column_name)
+            if column_name in self.data.selected_col:
+                self.data.selected_col.remove(column_name)
             else:
-                self.selected_col.append(column_name)
+                self.data.selected_col.append(column_name)
 
             self.path_entry.delete(0, tk.END)
-            self.path_entry.insert(0, str(self.selected_col))
+            self.path_entry.insert(0, str(self.data.selected_col))
 
 
         # Bind the selection event
@@ -152,3 +151,7 @@ class LoadData(tk.Frame):
         scrollbar.pack(side='right',fill="y")
 
         self.sheet.pack(expand=True,fill='both')
+
+    def clear_select(self):
+        self.data.selected_col.clear()
+        self.path_entry.delete(0, tk.END)

@@ -2,7 +2,7 @@ from typing import Literal
 import tkinter as tk
 import pandas as pd
 from numpy import sqrt
-
+from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder, MinMaxScaler
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.compose import ColumnTransformer
@@ -25,38 +25,73 @@ from .shared import DataModel
 # ------------------- Pre Processing -------------------
 
 def simple_imputer(data_model: DataModel, strategy):
-    data_model.df.columns = data_model.df.columns.astype(str)
 
-    imputer = SimpleImputer(strategy=strategy)
+    # Separate numeric and non-numeric columns
+    numeric_cols = data_model.df.select_dtypes(include='number').columns
+    non_numeric_cols = data_model.df.select_dtypes(exclude='number').columns
 
-    data_model.df = pd.DataFrame(imputer.fit_transform(data_model.df))
+    # Define the imputers for different column types
+    numeric_imputer = SimpleImputer(strategy=strategy)
+    
+    non_numeric_imputer = SimpleImputer(strategy="most_frequent")
+    
+    # Create the ColumnTransformer
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('num', numeric_imputer, numeric_cols),
+            ('cat', non_numeric_imputer, non_numeric_cols)
+        ],
+        remainder='passthrough'
+    )
+    
+    # Apply the transformations
+    transformed_data = preprocessor.fit_transform(data_model.df)
+    
+    # Reconstruct the DataFrame with the original column order
+    all_columns = list(numeric_cols) + list(non_numeric_cols)
+    data_model.df = pd.DataFrame(transformed_data, columns=all_columns)
+
+
 
 
 def label_encode(data_model: DataModel):
-    X = data_model.df.iloc[:, :-1]
-    y = data_model.df.iloc[:, -1]
-    y = LabelEncoder().fit_transform(y)
-    y = y.astype(int)
-    data_model.df = pd.concat([X, pd.DataFrame(y, columns=['label'])], axis=1)
-
+    
+    # Ensure columns are selected
+    if not data_model.selected_col:
+        print("No columns selected for label encoding")
+    
+    # Extract selected columns
+    X = data_model.df[data_model.selected_col]
+    
+    # Apply label encoding to each selected column
+    for col in X.columns:
+        data_model.df[col] = LabelEncoder().fit_transform(X[col]).astype(int)
 
 def one_hot_encode(data_model: DataModel):
-    categorical_columns = data_model.df.select_dtypes(include=['object']).columns.tolist()
-    categorical_columns = [col for col in categorical_columns if col not in ["label"]]
-
+    # Ensure columns are selected
+    if not data_model.selected_col:
+        raise ValueError("No columns selected for one-hot encoding")
+    
+    # Extract selected columns
+    X = data_model.df[data_model.selected_col]
+    
+    # Identify categorical columns
+    categorical_columns = X.select_dtypes(include=['object']).columns.tolist()
+    
+    # Create ColumnTransformer only for selected categorical columns
     ct = ColumnTransformer(
         [('encoder', OneHotEncoder(), categorical_columns)],
         remainder='passthrough'
     )
 
+    # Transform selected features
     transformed_features = ct.fit_transform(data_model.df)
 
+    # Get feature names
     feature_names = ct.get_feature_names_out()
-    transformed_df = pd.DataFrame(transformed_features, columns=feature_names)
 
-    # Add the label column back to the transformed DataFrame
-    transformed_df['label'] = data_model.df['label'].astype(int)
-    data_model.df = transformed_df
+    # Create DataFrame with transformed features
+    data_model.df = pd.DataFrame(transformed_features, columns=feature_names)
 
 
 def min_max(data_model: DataModel):
@@ -66,22 +101,35 @@ def min_max(data_model: DataModel):
 def delete_selected(data_model: DataModel):
     data_model.df = data_model.df.drop(columns=data_model.selected_col, axis=1)
 
-def apply_smote():
-    global data
-    X = data.iloc[:, :-1]  # Take all columns except the last one
-    y = data.iloc[:, -1]  # Take only the last column as the target variable
 
-    smote = SMOTE(random_state=42)
-    X_resampled, y_resampled = smote.fit_resample(X, y)
+def smote(data_model: DataModel,frame):
 
-    data = pd.concat([pd.DataFrame(X_resampled, columns=X.columns), pd.Series(y_resampled, name=y.name)],
-                     axis=1)
+    if len(data_model.selected_col) == 1:    
+        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
+        y = data_model.df[data_model.selected_col]
+    else:
+        tk.Message(frame, text="please select only one column")
+        return
+
+    # tk.Label(frame, text="Before OverSampling # 1 =\n{}".format(sum(X == 1))).pack()
+    # tk.Label(frame, text="Before OverSampling # 0  =\n{}".format(sum(y == 0))).pack()
+
+    X_resampled, y_resampled = SMOTE().fit_resample(X, y)
+
+    data_model.df = pd.concat([X_resampled,y_resampled],axis=1)
+
+    # tk.Label(frame, text="After OverSampling # 1 =\n{}".format(sum(y_resampled == 1))).pack()
+    # tk.Label(frame, text="After OverSampling # 0 =\n{}".format(sum(y_resampled == 0))).pack()
 
 # ------------------- Clasification ------------------------
 
 def SVM_C(data_model: DataModel, kernel, size):
-    X = data_model.df.iloc[:, :-1]
-    y = data_model.df.iloc[:, -1]
+    if len(data_model.selected_col) == 1:
+        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
+        y = data_model.df[data_model.selected_col]
+    else:
+        tk.Message(text="please select only one column")
+        return
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
     # Initialize SVM classifier
     svm_classifier = SVC(kernel=kernel)
@@ -92,8 +140,12 @@ def SVM_C(data_model: DataModel, kernel, size):
 
 
 def KNN(data_model: DataModel, n, metric, size):
-    X = data_model.df.iloc[:, :-1]
-    y = data_model.df.iloc[:, -1]
+    if len(data_model.selected_col) == 1:
+        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
+        y = data_model.df[data_model.selected_col]
+    else:
+        tk.Message(text="please select only one column")
+        return
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
     # Initialize SVM classifier
     KNN_classifier = KNeighborsClassifier(n_neighbors=n, metric=metric)
@@ -106,21 +158,29 @@ def KNN(data_model: DataModel, n, metric, size):
 
 def logistic_regression(data_model: DataModel, size):
 
-    X = data_model.df.iloc[:, :-1]
-    y = data_model.df.iloc[:, -1]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
+    if len(data_model.selected_col) == 1:    
+        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
+        y = data_model.df[data_model.selected_col]
+    else:
+        tk.Message(text="please select only one column")
+        return
 
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
     logistic_reg = LogisticRegression()
     # Train the model
     logistic_reg.fit(X_train, y_train)
     # Predict on the test set
     y_pred = logistic_reg.predict(X_test)
 
-    display_evaluation_metrics(y_test, y_pred, "r")
+    display_evaluation_metrics(y_test, y_pred, "c")
     
 def DTC(data_model: DataModel,depth, metric, size):
-    X = data_model.df.iloc[:, :-1]
-    y = data_model.df.iloc[:, -1]
+    if len(data_model.selected_col) == 1:
+        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
+        y = data_model.df[data_model.selected_col]
+    else:
+        tk.Message(text="please select only one column")
+        return
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
     # Initialize SVM classifier
     DTC_classifier = DecisionTreeClassifier(max_depth=depth, criterion=metric)
@@ -131,14 +191,37 @@ def DTC(data_model: DataModel,depth, metric, size):
     # Calculate accuracy
     display_evaluation_metrics(y_test, y_pred, "c")
 
+def ANN(data_model: DataModel, selected_option,entry_test_size,entry_layers):
+    if len(data_model.selected_col) == 1:
+        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
+        y = data_model.df[data_model.selected_col]
+    else:
+        tk.Message(text="please select only one column")
+        return
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size= entry_test_size / 100)
+    NN = MLPClassifier(hidden_layer_sizes=entry_layers, activation='relu', learning_rate=selected_option)
+    NN.fit(X_train, y_train)
+    y_pred = NN.predict(X_test)
+
+    # Print the weights of the trained model
+    #print(NN.coefs_)
+
+    # Display the evaluation metrics
+    display_evaluation_metrics(y_test, y_pred, "c")
+
 # ------------------- Regression ------------------------
 
 def linear_regression(data_model: DataModel, size):
 
-    X = data_model.df.iloc[:, :-1]
-    y = data_model.df.iloc[:, -1]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
 
+    if len(data_model.selected_col) == 1:
+        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
+        y = data_model.df[data_model.selected_col]
+    else:
+        tk.Message(text="please select only one column")
+        return
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
     linear_reg = LinearRegression()
     # Train the model
     linear_reg.fit(X_train, y_train)
@@ -149,10 +232,15 @@ def linear_regression(data_model: DataModel, size):
 
 def SVM_r(data_model: DataModel, kernel, size):
     
-    X = data_model.df.iloc[:, :-1]
-    y = data_model.df.iloc[:, -1]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
 
+    if len(data_model.selected_col) == 1:    
+        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
+        y = data_model.df[data_model.selected_col]
+    else:
+        tk.Message(text="please select only one column")
+        return
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
     svr = SVR(kernel=kernel)
 
     svr.fit(X_train, y_train)
@@ -160,7 +248,25 @@ def SVM_r(data_model: DataModel, kernel, size):
     y_pred = svr.predict(X_test)
 
     display_evaluation_metrics(y_test, y_pred, "r")
-    
+
+# ------------------- Clustring ------------------------
+
+def KM(data_model: DataModel, frame, entry):
+    # Create a frame to contain labels
+    data = data_model.df.values  # Convert DataFrame to NumPy array
+    km = KMeans(n_clusters=entry)
+    km.fit(data)
+    labels = km.labels_
+    centers = km.cluster_centers_
+
+    print("Cluster centers:", centers)
+    tk.Label(frame, text="Cluster centers:\n{}".format(centers)).pack()
+    plt.scatter(data[:, 0], data[:, 1], c=labels, s=50, cmap='viridis')
+    plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5)
+    plt.title(f'KMeans Clustering with {entry} Clusters')
+    plt.show()
+
+
 # ------------------- more ------------------------
 def display_evaluation_metrics(y_test, y_pred, type: Literal['r', 'c']):
     # Create a Tkinter window
@@ -200,50 +306,4 @@ def display_evaluation_metrics(y_test, y_pred, type: Literal['r', 'c']):
     # Run the Tkinter event loop
     window.mainloop()
 
-
-def clustring(data_model: DataModel, frame, entry):
-    # Create a frame to contain labels
-    data = data_model.df.values  # Convert DataFrame to NumPy array
-    km = KMeans(n_clusters=entry)
-    km.fit(data)
-    labels = km.labels_
-    centers = km.cluster_centers_
-
-    print("Cluster centers:", centers)
-    tk.Label(frame, text="Cluster centers:\n{}".format(centers)).pack()
-    plt.scatter(data[:, 0], data[:, 1], c=labels, s=50, cmap='viridis')
-    plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5)
-    plt.title(f'KMeans Clustering with {entry} Clusters')
-    plt.show()
-
-
-def ANN(data_model: DataModel, selected_option,entry_test_size,entry_layers):
-    X = data_model.df.iloc[:, :-1]
-    y = data_model.df.iloc[:, -1]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size= entry_test_size / 100)
-    NN = MLPClassifier(hidden_layer_sizes=entry_layers, activation='relu', learning_rate=selected_option)
-    NN.fit(X_train, y_train)
-    y_pred = NN.predict(X_test)
-
-    # Print the weights of the trained model
-    #print(NN.coefs_)
-
-    # Display the evaluation metrics
-    display_evaluation_metrics(y_test, y_pred, "c")
-def smote(data_model: DataModel, entry_test_size,frame):
-
-    X = data_model.df.iloc[:, :-1]
-    y = data_model.df.iloc[:, -1]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=entry_test_size / 100)
-
-    tk.Label(frame, text="Before OverSampling # 1 =\n{}".format(sum(y_train == 1))).pack()
-    print("Before OverSampling # 0 =", sum(y_train == 0))
-    tk.Label(frame, text="Before OverSampling # 0  =\n{}".format(sum(y_train == 0))).pack()
-
-    sm = SMOTE()
-    X_resampled, y_resampled = sm.fit_resample(X_train, y_train)
-
-    print("-----------------------------------------")
-    tk.Label(frame, text="After OverSampling # 1 =\n{}".format(sum(y_resampled == 1))).pack()
-    tk.Label(frame, text="After OverSampling # 0 =\n{}".format(sum(y_resampled == 0))).pack()
 
