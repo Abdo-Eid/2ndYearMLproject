@@ -1,36 +1,36 @@
-import tkinter as tk
+import customtkinter as ctk
 from tkinter import ttk, filedialog
 import pandas as pd
 from .shared import DataModel
         
-class LoadData(tk.Frame):
+class LoadData(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
 
         self.data : DataModel = parent.data
         self.create_widgets()
     def create_widgets(self):
-        self.main_frame = tk.Frame(self)
+        self.main_frame = ctk.CTkFrame(self)
         self.main_frame.pack(padx=15,pady=5)
 
         # First Row
-        tk.Button(self.main_frame, text="Load Data", command=self.load_data).grid(row=1, column=0, padx=5, pady=5)
+        ctk.CTkButton(self.main_frame, text="Load Data", command=self.load_data).grid(row=0, column=0, padx=5, pady=5)
 
-        self.path_entry = tk.Entry(self.main_frame)
-        self.path_entry.grid(row=1, column=1, columnspan=3, padx=5, pady=5, sticky="ew")
-        tk.Button(self.main_frame, text="save", command=self.save_dataframe).grid(row=1, column=4, padx=5, pady=5)
+        self.path_entry = ctk.CTkEntry(self.main_frame)
+        self.path_entry.grid(row=0, column=1, columnspan=3, padx=5, pady=5, sticky="ew")
+        ctk.CTkButton(self.main_frame, text="save", command=self.save_dataframe).grid(row=0, column=4, padx=5, pady=5)
+
         # Second Row
-        tk.Button(self.main_frame, text="Show DataFrame", command=self.show_dataframe).grid(row=2, column=0, padx=5, pady=5)
-        tk.Button(self.main_frame, text="hide table", command=self.clear_dataframe).grid(row=2, column=1, padx=5, pady=5)
-        tk.Button(self.main_frame, text="clear select", command=self.clear_select).grid(row=2, column=2, padx=5, pady=5)
-        tk.Button(self.main_frame, text="# of Duplicates", command=self.num_duplicates).grid(row=2, column=3, padx=5, pady=5)
-        tk.Button(self.main_frame, text="# of NaN", command=self.num_nan).grid(row=2, column=4, padx=5, pady=5)
+        ctk.CTkButton(self.main_frame, text="Show DataFrame", command=self.show_dataframe).grid(row=1, column=0, padx=5, pady=5)
+        ctk.CTkButton(self.main_frame, text="hide table", command=self.clear_dataframe).grid(row=1, column=1, padx=5, pady=5)
+        ctk.CTkButton(self.main_frame, text="clear select", command=self.clear_select).grid(row=1, column=2, padx=5, pady=5)
+        ctk.CTkButton(self.main_frame, text="# of Duplicates", command=self.num_duplicates).grid(row=1, column=3, padx=5, pady=5)
+        ctk.CTkButton(self.main_frame, text="# of NaN", command=self.num_nan).grid(row=1, column=4, padx=5, pady=5)
 
         # Third Row
-        self.show_frame = tk.Frame(self)
-        self.show_frame.pack(expand=True, fill='both')
-        self.result_label = tk.Label(self.show_frame, text="")
+        self.result_label = ctk.CTkLabel(self, text="")
         self.result_label.pack()
+
     def load_data(self):
         """
         get csv file from user and insert the path into the entry
@@ -39,10 +39,10 @@ class LoadData(tk.Frame):
         if self.data.file_path:
             try:
                 self.data.df = pd.read_csv(self.data.file_path)
-                self.path_entry.delete(0, tk.END)
+                self.path_entry.delete(0, ctk.END)
                 self.path_entry.insert(0, self.data.file_path)
             except Exception as e:
-                self.result_label.config(text="Error loading DataFrame: " + str(e))
+                self.result_label.configure(text="Error loading DataFrame: " + str(e))
 
     def show_dataframe(self):
         if self.data.file_path or not self.data.df.empty:
@@ -50,9 +50,9 @@ class LoadData(tk.Frame):
                 self.show_sheet(self.data.df)
 
             except Exception as e:
-                self.result_label.config(text="Error: " + str(e))
+                self.result_label.configure(text="Error: " + str(e))
         else:
-            self.result_label.config(text="Please load a data file first.")
+            self.result_label.configure(text="Please load a data file first.")
 
     def clear_dataframe(self):
         if hasattr(self,'sheet'):
@@ -62,20 +62,20 @@ class LoadData(tk.Frame):
         if self.data.file_path:
             try:
                 num_duplicates = self.data.df.duplicated().sum()
-                self.result_label.config(text=f"Number of Duplicates rows: \n{num_duplicates}")
+                self.result_label.configure(text=f"Number of Duplicates rows: \n{num_duplicates}")
             except Exception as e:
-                self.result_label.config(text="Error loading DataFrame: " + str(e))
+                self.result_label.configure(text="Error loading DataFrame: " + str(e))
         else:
-            self.result_label.config(text="Please load a data file first.")
+            self.result_label.configure(text="Please load a data file first.")
 
     def num_nan(self):
         if self.data.file_path:
             try:
                 self.show_sheet(self.data.df.isna().sum())
             except Exception as e:
-                self.result_label.config(text="Error loading DataFrame: " + str(e))
+                self.result_label.configure(text="Error loading DataFrame: " + str(e))
         else:
-            self.result_label.config(text="Please load a data file first.")
+            self.result_label.configure(text="Please load a data file first.")
 
     def save_dataframe(self):
         """
@@ -105,7 +105,7 @@ class LoadData(tk.Frame):
             self.sheet.destroy()
 
         # making the tree view in a frame
-        self.sheet = tk.Frame(self)
+        self.sheet = ctk.CTkFrame(self)
 
         tree = ttk.Treeview(self.sheet, show='headings')
 
@@ -122,7 +122,7 @@ class LoadData(tk.Frame):
 
         # Insert data
         for index, row in df.iterrows():
-            tree.insert("", tk.END, values=list(row))
+            tree.insert("", ctk.END, values=list(row))
 
         tree.pack(expand=True,fill='both', side='left')
 
@@ -137,7 +137,7 @@ class LoadData(tk.Frame):
             else:
                 self.data.selected_col.append(column_name)
 
-            self.path_entry.delete(0, tk.END)
+            self.path_entry.delete(0, ctk.END)
             self.path_entry.insert(0, str(self.data.selected_col))
 
 
@@ -146,7 +146,7 @@ class LoadData(tk.Frame):
 
 
         # make a scrollbar
-        scrollbar = ttk.Scrollbar(self.sheet, orient=tk.VERTICAL, command=tree.yview)
+        scrollbar = ctk.CTkScrollbar(self.sheet, orientation=ctk.VERTICAL, command=tree.yview)
         tree.configure(yscroll=scrollbar.set)
         scrollbar.pack(side='right',fill="y")
 
@@ -154,4 +154,4 @@ class LoadData(tk.Frame):
 
     def clear_select(self):
         self.data.selected_col.clear()
-        self.path_entry.delete(0, tk.END)
+        self.path_entry.delete(0, ctk.END)

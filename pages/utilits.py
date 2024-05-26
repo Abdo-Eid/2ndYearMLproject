@@ -1,5 +1,6 @@
 from typing import Literal
-import tkinter as tk
+import customtkinter as ctk
+from tkinter import messagebox
 import pandas as pd
 from numpy import sqrt
 from sklearn.pipeline import Pipeline
@@ -105,30 +106,30 @@ def delete_selected(data_model: DataModel):
 def smote(data_model: DataModel,frame):
 
     if len(data_model.selected_col) == 1:    
-        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
-        y = data_model.df[data_model.selected_col]
+        X = data_model.df.drop(columns=data_model.selected_col,axis=1)
+        y = data_model.df[data_model.selected_col].squeeze()
     else:
-        tk.Message(frame, text="please select only one column")
+        messagebox.showerror("Error","please select only one column")
         return
 
-    # tk.Label(frame, text="Before OverSampling # 1 =\n{}".format(sum(X == 1))).pack()
-    # tk.Label(frame, text="Before OverSampling # 0  =\n{}".format(sum(y == 0))).pack()
+    # ctk.CTkLabel(frame, text="Before OverSampling # 1 =\n{}".format(sum(X == 1))).pack()
+    # ctk.CTkLabel(frame, text="Before OverSampling # 0  =\n{}".format(sum(y == 0))).pack()
 
     X_resampled, y_resampled = SMOTE().fit_resample(X, y)
 
     data_model.df = pd.concat([X_resampled,y_resampled],axis=1)
 
-    # tk.Label(frame, text="After OverSampling # 1 =\n{}".format(sum(y_resampled == 1))).pack()
-    # tk.Label(frame, text="After OverSampling # 0 =\n{}".format(sum(y_resampled == 0))).pack()
+    # ctk.CTkLabel(frame, text="After OverSampling # 1 =\n{}".format(sum(y_resampled == 1))).pack()
+    # ctk.CTkLabel(frame, text="After OverSampling # 0 =\n{}".format(sum(y_resampled == 0))).pack()
 
 # ------------------- Clasification ------------------------
 
 def SVM_C(data_model: DataModel, kernel, size):
     if len(data_model.selected_col) == 1:
-        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
-        y = data_model.df[data_model.selected_col]
+        X = data_model.df.drop(columns=data_model.selected_col,axis=1)
+        y = data_model.df[data_model.selected_col].squeeze()
     else:
-        tk.Message(text="please select only one column")
+        messagebox.showerror("Error","please select only one column")
         return
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
     # Initialize SVM classifier
@@ -141,10 +142,10 @@ def SVM_C(data_model: DataModel, kernel, size):
 
 def KNN(data_model: DataModel, n, metric, size):
     if len(data_model.selected_col) == 1:
-        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
-        y = data_model.df[data_model.selected_col]
+        X = data_model.df.drop(columns=data_model.selected_col,axis=1)
+        y = data_model.df[data_model.selected_col].squeeze()
     else:
-        tk.Message(text="please select only one column")
+        messagebox.showerror("Error","please select only one column")
         return
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
     # Initialize SVM classifier
@@ -159,10 +160,10 @@ def KNN(data_model: DataModel, n, metric, size):
 def logistic_regression(data_model: DataModel, size):
 
     if len(data_model.selected_col) == 1:    
-        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
-        y = data_model.df[data_model.selected_col]
+        X = data_model.df.drop(columns=data_model.selected_col,axis=1)
+        y = data_model.df[data_model.selected_col].squeeze()
     else:
-        tk.Message(text="please select only one column")
+        messagebox.showerror("Error","please select only one column")
         return
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
@@ -176,10 +177,10 @@ def logistic_regression(data_model: DataModel, size):
     
 def DTC(data_model: DataModel,depth, metric, size):
     if len(data_model.selected_col) == 1:
-        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
-        y = data_model.df[data_model.selected_col]
+        X = data_model.df.drop(columns=data_model.selected_col,axis=1)
+        y = data_model.df[data_model.selected_col].squeeze()
     else:
-        tk.Message(text="please select only one column")
+        messagebox.showerror("Error","please select only one column")
         return
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
     # Initialize SVM classifier
@@ -193,10 +194,10 @@ def DTC(data_model: DataModel,depth, metric, size):
 
 def ANN(data_model: DataModel, selected_option,entry_test_size,entry_layers):
     if len(data_model.selected_col) == 1:
-        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
-        y = data_model.df[data_model.selected_col]
+        X = data_model.df.drop(columns=data_model.selected_col,axis=1)
+        y = data_model.df[data_model.selected_col].squeeze()
     else:
-        tk.Message(text="please select only one column")
+        messagebox.showerror("Error","please select only one column")
         return
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size= entry_test_size / 100)
     NN = MLPClassifier(hidden_layer_sizes=entry_layers, activation='relu', learning_rate=selected_option)
@@ -215,10 +216,10 @@ def linear_regression(data_model: DataModel, size):
 
 
     if len(data_model.selected_col) == 1:
-        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
-        y = data_model.df[data_model.selected_col]
+        X = data_model.df.drop(columns=data_model.selected_col,axis=1)
+        y = data_model.df[data_model.selected_col].squeeze()
     else:
-        tk.Message(text="please select only one column")
+        messagebox.showerror("Error","please select only one column")
         return
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
@@ -234,10 +235,10 @@ def SVM_r(data_model: DataModel, kernel, size):
     
 
     if len(data_model.selected_col) == 1:    
-        X = data_model.df.drop(data_model.selected_col.pop(),axis=1)
-        y = data_model.df[data_model.selected_col]
+        X = data_model.df.drop(columns=data_model.selected_col,axis=1)
+        y = data_model.df[data_model.selected_col].squeeze()
     else:
-        tk.Message(text="please select only one column")
+        messagebox.showerror("Error","please select only one column")
         return
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=size / 100)
@@ -260,7 +261,7 @@ def KM(data_model: DataModel, frame, entry):
     centers = km.cluster_centers_
 
     print("Cluster centers:", centers)
-    tk.Label(frame, text="Cluster centers:\n{}".format(centers)).pack()
+    ctk.CTkLabel(frame, text="Cluster centers:\n{}".format(centers)).pack()
     plt.scatter(data[:, 0], data[:, 1], c=labels, s=50, cmap='viridis')
     plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5)
     plt.title(f'KMeans Clustering with {entry} Clusters')
@@ -270,12 +271,12 @@ def KM(data_model: DataModel, frame, entry):
 # ------------------- more ------------------------
 def display_evaluation_metrics(y_test, y_pred, type: Literal['r', 'c']):
     # Create a Tkinter window
-    window = tk.Tk()
+    window = ctk.CTk()
     window.geometry('600x400')  # Set window size
     window.title("Evaluation Metrics Display")
 
     # Create a frame to contain labels
-    frame = tk.Frame(window)
+    frame = ctk.CTkFrame(window)
     frame.pack(padx=20, pady=10)
 
 
@@ -290,19 +291,19 @@ def display_evaluation_metrics(y_test, y_pred, type: Literal['r', 'c']):
         Root Mean Squared Error (RMSE): {rmse:.2f}
         R-squared (R²): {r2:.2f}""".format(mae=mae, mse=mse, rmse=rmse, r2=r2)
 
-        tk.Label(frame, text = t).pack()
+        ctk.CTkLabel(frame, text = t).pack()
 
     if type == "c":
 
         accuracy = accuracy_score(y_test, y_pred)
-        tk.Label(frame, text="Accuracy: {:.2f}%".format(accuracy)).pack()
+        ctk.CTkLabel(frame, text="Accuracy: {:.2f}%".format(accuracy)).pack()
 
         confusion_mat = confusion_matrix(y_test, y_pred)
-        tk.Label(frame, text ="Confusion Matrix:\n{}".format(confusion_mat)).pack()
+        ctk.CTkLabel(frame, text ="Confusion Matrix:\n{}".format(confusion_mat)).pack()
 
         clas_matric=classification_report(y_test, y_pred, zero_division=0)
         clas_matric = classification_report(y_test, y_pred)
-        tk.Label(frame, text="classification report:\n{}".format(clas_matric)).pack()
+        ctk.CTkLabel(frame, text="classification report:\n{}".format(clas_matric)).pack()
     # Run the Tkinter event loop
     window.mainloop()
 

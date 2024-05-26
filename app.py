@@ -1,10 +1,9 @@
 from pages import *
-import tkinter as tk
+import customtkinter as ctk
 
 # ------------------------------- ROOT WINDOW ----------------------------------
 
-
-class TkinterApp(tk.Tk):
+class TkinterApp(ctk.CTk):
 
     def __init__(self, size : tuple[int, int]):
         super().__init__()
@@ -20,7 +19,7 @@ class TkinterApp(tk.Tk):
         self.store_frames((Main, PreProcessing, Classification, Regression, Clustring))
         self.show_page("Main")
         self.LoadData_page = LoadData(self)
-        self.columnconfigure(1,  weight=3)
+        self.columnconfigure(1,  weight=4)
         self.LoadData_page.grid(row=0, column=1, sticky="nsew")
     
     def store_frames(self, frames:tuple):

@@ -1,18 +1,17 @@
 import pandas as pd
+import customtkinter as ctk
 
 # ------------------------------- Styles ----------------------------------
 
 class AppStyle:
     def __init__(self):
-
         self.label_MB = {
-            "fg": "#FFFFFF",
-            "bg": "#2C3E50",
-            "cursor": "arrow",
-            "font": ("Arial", 14),
-            "width": 18,
-            "height": 3
+            "width": 300,
+            "height": 100,
+            "font": ("Arial", 30)
         }
+        self.font_g = ctk.CTkFont(family="Arial", size=30, weight="bold")
+
 # ------------------------------- Data ----------------------------------
 class DataModel:
     def __init__(self):
